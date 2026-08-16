@@ -1,0 +1,15 @@
+2) Audita — Propósito y cómo
+
+Propósito:
+Ejecutar comprobaciones automáticas y manuales que garanticen que el repositorio cumpla reglas mínimas de calidad, seguridad y reproducibilidad.
+
+Pasos sencillos:
+1. Ejecutar el workflow de auditoría (o revisar su salida en CI).
+2. Comprobar que linter y tests (si existen) pasan.
+3. Revisar dependencias vulnerables (Dependabot/scan) y reportar.
+4. Generar un ticket o nota con las fallas críticas y tareas de corrección.
+
+Lista de verificación mínima:
+- [ ] Auditoría CI verde o errores documentados
+- [ ] Linter -> OK o issues asignados
+- [ ] Tests -> OK o cobertura mínima definida

@@ -1,0 +1,15 @@
+3) Piensa & Analiza — Propósito y cómo
+
+Propósito:
+Interpretar los resultados de la revisión y auditoría, priorizar riesgos y definir acciones técnicas y organizativas.
+
+Pasos sencillos:
+1. Revisar hallazgos del paso 1 y 2. Clasificar por severidad (critico/alto/medio/bajo).
+2. Para cada hallazgo crítico: proponer una solución concreta (ej. agregar linter, crear migration de Prisma, mover secretos a vault).
+3. Estimar esfuerzo mínimo y asignar responsable.
+4. Documentar decisiones en `docs/decisions.md`.
+
+Lista de verificación mínima:
+- [ ] Hallazgos priorizados
+- [ ] Acciones con responsables y plazos
+- [ ] Decisión registrada en `docs/decisions.md`

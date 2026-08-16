@@ -1,0 +1,15 @@
+4) Busca — Propósito y cómo
+
+Propósito:
+Investigar soluciones, referencias y ejemplos que permitan resolver los hallazgos con prácticas probadas y seguras.
+
+Pasos sencillos:
+1. Buscar en la documentación oficial (Prisma, Node.js, GitHub Actions) para soluciones aplicables.
+2. Revisar repositorios similares y guías de mejores prácticas.
+3. Probar pequeñas pruebas de concepto en una rama aislada o fork.
+4. Documentar la solución recomendada y su origen (links) en `docs/solutions/`.
+
+Lista de verificación mínima:
+- [ ] Referencias y enlaces guardados
+- [ ] POC simple creado y documentado
+- [ ] Recomendación y pasos de implementación listos
