@@ -7,7 +7,7 @@ Sigue el mismo patrón del módulo `ganado` (carpeta hermana):
 ```
 reportes/
 ├── api.ts     # Funciones fetch() hacia http://localhost:8000/api/reportes/...
-└── main.ts    # Lógica de la tabla/gráficas y manejo del DOM
+└── main.tse la tabla/gráficas y manejo del DOM
 ```
 
 ## Pasos para empezar
