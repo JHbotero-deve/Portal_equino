@@ -6,3 +6,7 @@ pydantic==2.9.2
 # Para conectarte a SQL Server más adelante, cuando tu compañero la tenga lista,
 # descomenta esta línea e instala el driver ODBC de SQL Server en tu sistema:
 # pyodbc==5.1.0
+
+passlib[bcrypt]
+python-jose[cryptography]
+email-validator
