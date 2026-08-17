@@ -19,5 +19,19 @@ CREATE TABLE usuarios (
     created_at DATETIME2 DEFAULT SYSDATETIME()
 );
 
+
+-- Módulo: cattle / ganado (Oscar) -- backend/app/modules/cattle/models.py
+CREATE TABLE animales (
+    id INT IDENTITY(1,1) PRIMARY KEY,
+    tag VARCHAR(50) NOT NULL UNIQUE,
+    birth_date DATE NULL,
+    sex VARCHAR(10) NULL,
+    breed VARCHAR(50) NULL,
+    status VARCHAR(20) NOT NULL DEFAULT 'active',
+    created_at DATETIME2 DEFAULT SYSDATETIME(),
+    updated_at DATETIME2 DEFAULT SYSDATETIME()
+);
+
+
+
 -- Modulo: reportes (Jorge) -- pendiente
--- Modulo: cattle / ganado (Oscar) -- pendiente
