@@ -14,6 +14,8 @@ import os
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, declarative_base
 
+import app.config  # Carga backend/.env antes de leer las variables.
+
 # Por defecto: SQLite local (archivo gavac.db en esta carpeta).
 # Para SQL Server más adelante, la URL se ve algo así (ejemplo):
 #   mssql+pyodbc://usuario:clave@servidor/GAVAC?driver=ODBC+Driver+17+for+SQL+Server
