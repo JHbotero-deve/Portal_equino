@@ -84,7 +84,7 @@ jobs:
           if [ -f frontend/package.json ]; then
             echo "frontend/package.json detectado — ejecutando pipeline npm"
             cd frontend
-            npm ci
+            npm install
             npm run lint || true
           else
             echo "frontend/package.json no encontrado — se omiten comprobaciones npm"
