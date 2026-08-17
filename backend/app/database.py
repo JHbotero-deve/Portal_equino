@@ -13,6 +13,9 @@ cualquiera de las dos bases de datos de la misma forma.
 import os
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, declarative_base
+from dotenv import load_dotenv
+
+load_dotenv()
 
 import app.config  # Carga backend/.env antes de leer las variables.
 
