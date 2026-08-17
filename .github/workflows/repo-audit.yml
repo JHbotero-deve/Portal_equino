@@ -62,11 +62,11 @@ jobs:
             fi
           done
 
-          echo ""
-          if [ "$missing" -eq 1 ]; then
-            echo "AUDITORÍA FALLIDA: faltan archivos obligatorios. Añade los archivos indicados y vuelve a ejecutar CI."
-            exit 1
-          fi
+            echo ""
+            if [ "$missing" -eq 1 ]; then
+              echo "AUDITORÍA FALLIDA: faltan archivos obligatorios. Añade los archivos indicados y vuelve a ejecutar CI."
+              exit 1
+            fi
 
           echo "Auditoría completada. Warnings:$warn"
 
@@ -80,7 +80,7 @@ jobs:
       - name: Run npm CI when package.json exists
         run: |
           set -e
-          if [ -f frontend/package.json ]; then
+          fi [ -f frontend/package.json ]; then
             echo "frontend/package.json detectado — ejecutando pipeline npm"
             cd frontend
             npm install
