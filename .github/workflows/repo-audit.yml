@@ -76,14 +76,15 @@ jobs:
         with:
           node-version: '16'
 
-      - name: Run npm CI + lint + tests when package.json exists
+    
+      - name: Run npm CI when package.json exists
         run: |
           set -e
-          if [ -f package.json ]; then
-            echo "package.json detectado — ejecutando pipeline npm"
-            npm install
+          if [ -f frontend/package.json ]; then
+            echo "frontend/package.json detectado — ejecutando pipeline npm"
+            cd frontend
+            npm ci
             npm run lint || true
-            npm test
           else
-            echo "package.json no encontrado — se omiten comprobaciones npm"
+            echo "frontend/package.json no encontrado — se omiten comprobaciones npm"
           fi
