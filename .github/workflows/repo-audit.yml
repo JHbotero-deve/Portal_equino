@@ -81,7 +81,7 @@ jobs:
           set -e
           if [ -f package.json ]; then
             echo "package.json detectado — ejecutando pipeline npm"
-            npm ci
+            npm install
             npm run lint || true
             npm test
           else
