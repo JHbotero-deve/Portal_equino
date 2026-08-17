@@ -7,11 +7,12 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.database import Base, engine
+from app.modules.cattle.router import router as cattle_router
 
-# A medida que cada integrante termine su módulo, descomenta su import
-# y su app.include_router(...) correspondiente:
-# from app.modules.cattle.router import router as cattle_router
+# Cuando Juan termine su módulo, descomenta esta línea:
 # from app.modules.auth.router import router as auth_router
+
+# Cuando Jorge termine el suyo, descomenta esta línea:
 # from app.modules.reportes.router import router as reportes_router
 
 # Crea las tablas si no existen (en SQLite local). En producción con
@@ -27,7 +28,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# app.include_router(cattle_router)
+app.include_router(cattle_router)
 # app.include_router(auth_router)
 # app.include_router(reportes_router)
 
