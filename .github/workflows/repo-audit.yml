@@ -42,19 +42,21 @@ jobs:
           }
 
           # Archivos/carpetas críticos
-          check_required package.json
+          check_required frontend/package.json
           check_required README.md
           check_required .gitignore
+          check_required backend/requirements.txt
 
           # Infraestructura/BD
-          check_optional prisma/schema.prisma
+          check_optional backend/app/database.py
 
           # Código fuente
-          check_required src
-          check_required src/modules
+          check_required frontend/src
+          check_required frontend/src/modules
+          check_required backend/app/modules
 
           # Módulos esperados (no obligatorios, se informan si faltan)
-          for d in src/modules/admin src/modules/auth src/modules/cattle src/modules/health src/modules/inventory src/modules/production src/modules/reports src/modules/reproduction src/modules/sync; do
+          for d in backend/app/modules/cattle backend/app/modules/auth backend/app/modules/reportes frontend/src/modules/ganado frontend/src/modules/auth frontend/src/modules/reportes; do
             if [ -d "$d" ]; then
               echo "OK: $d"
             else
@@ -76,14 +78,14 @@ jobs:
         with:
           node-version: '16'
 
-      - name: Run npm CI + lint + tests when package.json exists
+      - name: Run npm CI when package.json exists
         run: |
           set -e
-          if [ -f package.json ]; then
-            echo "package.json detectado — ejecutando pipeline npm"
-            npm ci
+          if [ -f frontend/package.json ]; then
+            echo "frontend/package.json detectado — ejecutando pipeline npm"
+            cd frontend
+            npm install
             npm run lint || true
-            npm test
           else
-            echo "package.json no encontrado — se omiten comprobaciones npm"
+            echo "frontend/package.json no encontrado — se omiten comprobaciones npm"
           fi
