@@ -8,7 +8,7 @@ from app.modules.reportes.router import router as reportes_router
 # A medida que cada integrante termine su módulo, descomenta su import
 # y su app.include_router(...) correspondiente:
 # from app.modules.cattle.router import router as cattle_router
-from app.modules.auth.router import router as auth_router
+# from app.modules.auth.router import router as auth_router
 # from app.modules.reportes.router import router as reportes_router
 
 Base.metadata.create_all(bind=engine)
@@ -24,7 +24,7 @@ app.add_middleware(
 )
 
 # app.include_router(cattle_router)
-app.include_router(auth_router)
+# app.include_router(auth_router)
 # app.include_router(reportes_router)
 
 
