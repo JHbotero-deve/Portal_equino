@@ -1,47 +1,127 @@
-from app.modules.cattle.router import router as cattle_router
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse
+
+import os
 
 from app.database import Base, engine
-from app.middleware.security import SecurityHeadersMiddleware
+
+# ============================================================
+# IMPORTAR MODELOS
+# ============================================================
+# Estos imports permiten que SQLAlchemy registre los modelos
+# antes de ejecutar Base.metadata.create_all().
+from app.modules.auth.models import Usuario
+from app.modules.cattle.models import Animal
+
+# ============================================================
+# IMPORTAR ROUTERS
+# ============================================================
+
 from app.modules.cattle.router import router as cattle_router
-from app.modules.auth.router import router as auth_router
-from app.modules.reportes.router import router as reportes_router
+
+
+# ============================================================
+# CREAR APLICACIÓN FASTAPI
+# ============================================================
+
+app = FastAPI(
+    title="GAVAC API",
+    version="0.1.0"
+)
+
+
+# ============================================================
+# CREAR TABLAS
+# ============================================================
+# SQLAlchemy crea las tablas de los modelos registrados
+# que todavía no existan en PostgreSQL.
 
 Base.metadata.create_all(bind=engine)
 
-app = FastAPI(title="GAVAC API", version="0.1.0")
+
+# ============================================================
+# CONFIGURACIÓN CORS
+# ============================================================
 
 app.add_middleware(
     CORSMiddleware,
-    # en producción, restringir al dominio real del frontend
     allow_origins=["*"],
+    allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-app.add_middleware(SecurityHeadersMiddleware)
 
-app.include_router(cattle_router)
-app.include_router(auth_router)
-app.include_router(reportes_router)
+# ============================================================
+# CONFIGURACIÓN DEL FRONTEND
+# ============================================================
 
+frontend_dir = os.path.abspath(
+    os.path.join(
+        os.path.dirname(__file__),
+        "../../frontend"
+    )
+)
+
+
+# ============================================================
+# ARCHIVOS ESTÁTICOS
+# ============================================================
+
+app.mount(
+    "/static",
+    StaticFiles(directory=frontend_dir),
+    name="static"
+)
+
+
+# ============================================================
+# PÁGINA PRINCIPAL
+# ============================================================
 
 @app.get("/")
-def home():
-    return {
-        "message": "Bienvenido a la API de GAVAC",
-        "docs": "/docs",
-        "health": "/health"
-    }
+def index_page():
 
+    return FileResponse(
+        os.path.join(
+            frontend_dir,
+            "index.html"
+        )
+    )
+
+
+# ============================================================
+# PÁGINA DE REGISTRO DE GANADO
+# ============================================================
+
+@app.get("/ganado")
+def ganado_page():
+
+    return FileResponse(
+        os.path.join(
+            frontend_dir,
+            "ganado.html"
+        )
+    )
+
+
+# ============================================================
+# RUTAS DEL MÓDULO DE GANADO
+# ============================================================
+
+app.include_router(cattle_router)
+
+
+# ============================================================
+# HEALTH CHECK
+# ============================================================
 
 @app.get("/health")
 def health():
-    from app.database import DATABASE_URL
-    db_type = "SQL Server" if "mssql" in DATABASE_URL.lower() else "SQLite"
+
     return {
         "status": "ok",
-        "database": db_type,
-        "url_info": "192.168.1.8" if db_type == "SQL Server" else "local"
+        "database": "PostgreSQL"
     }

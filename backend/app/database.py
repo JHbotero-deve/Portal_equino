@@ -1,41 +1,91 @@
 """
-Configuración de la base de datos.
+Configuración de la base de datos de GAVAC.
 
-HOY: usamos SQLite (un archivo local, sin necesidad de servidor) para que
-puedas programar y probar tu módulo sin depender de que el compañero de
-base de datos termine SQL Server.
+La conexión se obtiene desde la variable DATABASE_URL
+definida en el archivo .env.
 
-CUANDO SQL Server esté listo: solo cambias la variable de entorno
-DATABASE_URL (ver .env.example) y NO tocas ni una línea de código de
-models/repositories/services. SQLAlchemy se encarga de hablar con
-cualquiera de las dos bases de datos de la misma forma.
+Actualmente utilizamos SQL Server mediante SQLAlchemy + PyODBC.
 """
+
 import os
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker, declarative_base
+
 from dotenv import load_dotenv
+from sqlalchemy import create_engine
+from sqlalchemy.orm import declarative_base, sessionmaker
+
+
+# ============================================================
+# CARGAR VARIABLES DEL ARCHIVO .env
+# ============================================================
 
 load_dotenv()
 
-import app.config  # Carga backend/.env antes de leer las variables.
 
-# Por defecto: SQLite local (archivo gavac.db en esta carpeta).
-# Para SQL Server más adelante, la URL se ve algo así (ejemplo):
-#   mssql+pyodbc://usuario:clave@servidor/GAVAC?driver=ODBC+Driver+17+for+SQL+Server
-DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///./gavac.db")
+# ============================================================
+# OBTENER URL DE LA BASE DE DATOS
+# ============================================================
 
-connect_args = {"check_same_thread": False} if DATABASE_URL.startswith("sqlite") else {}
+DATABASE_URL = os.getenv("DATABASE_URL")
 
-engine = create_engine(DATABASE_URL, connect_args=connect_args)
-SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+if not DATABASE_URL:
+    raise RuntimeError(
+        "No se encontró DATABASE_URL en el archivo .env"
+    )
+
+
+# ============================================================
+# CONFIGURAR CONEXIÓN
+# ============================================================
+
+# SQLite necesita check_same_thread.
+# SQL Server no necesita este parámetro.
+connect_args = {}
+
+if DATABASE_URL.startswith("sqlite"):
+    connect_args = {
+        "check_same_thread": False
+    }
+
+
+engine = create_engine(
+    DATABASE_URL,
+    connect_args=connect_args,
+    pool_pre_ping=True
+)
+
+
+# ============================================================
+# SESIONES
+# ============================================================
+
+SessionLocal = sessionmaker(
+    autocommit=False,
+    autoflush=False,
+    bind=engine
+)
+
+
+# ============================================================
+# BASE PARA LOS MODELOS
+# ============================================================
 
 Base = declarative_base()
 
 
+# ============================================================
+# DEPENDENCIA PARA FASTAPI
+# ============================================================
+
 def get_db():
-    """Dependencia de FastAPI: entrega una sesión de BD y la cierra al terminar."""
+    """
+    Crea una sesión de base de datos para una petición
+    y la cierra automáticamente al finalizar.
+    """
+
     db = SessionLocal()
+
     try:
         yield db
+
     finally:
         db.close()
