@@ -1,4 +1,4 @@
-"""
+﻿"""
 Modelo SQLAlchemy: tabla de usuarios.
 
 IMPORTANTE: este archivo importa `Base` desde app.database.
