@@ -26,6 +26,21 @@ app.include_router(auth_router)
 app.include_router(reportes_router)
 
 
+@app.get("/")
+def home():
+    return {
+        "message": "Bienvenido a la API de GAVAC",
+        "docs": "/docs",
+        "health": "/health"
+    }
+
+
 @app.get("/health")
 def health():
-    return {"status": "ok"}
+    from app.database import DATABASE_URL
+    db_type = "SQL Server" if "mssql" in DATABASE_URL.lower() else "SQLite"
+    return {
+        "status": "ok",
+        "database": db_type,
+        "url_info": "192.168.1.8" if db_type == "SQL Server" else "local"
+    }
