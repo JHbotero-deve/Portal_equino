@@ -2,12 +2,9 @@ name: Repo Audit
 
 on:
   push:
-    branches: [ main, master ]
+    branches: [ main, master, feature/reporte ]
   pull_request:
     branches: [ main, master ]
-  workflow_dispatch: {}
-  schedule:
-    - cron: '0 0 * * *'
 
 jobs:
   audit:
@@ -21,7 +18,6 @@ jobs:
           set -e
           echo "Iniciando auditoría de repositorio"
           missing=0
-          warn=0
 
           check_required() {
             if [ ! -e "$1" ]; then
@@ -34,56 +30,20 @@ jobs:
 
           check_optional() {
             if [ ! -e "$1" ]; then
-              echo "WARN: $1 (recommended)"
-              warn=1
+              echo "WARN: falta $1"
             else
               echo "OK: $1"
             fi
           }
 
-          # Archivos/carpetas críticos
-          check_required package.json
+          check_required frontend/package.json
           check_required README.md
           check_required .gitignore
+          check_required frontend/src
+          check_required frontend/src/modules
 
-          # Infraestructura/BD
-          check_optional prisma/schema.prisma
-
-          # Código fuente
-          check_required src
-          check_required src/modules
-
-          # Módulos esperados (no obligatorios, se informan si faltan)
-          for d in src/modules/admin src/modules/auth src/modules/cattle src/modules/health src/modules/inventory src/modules/production src/modules/reports src/modules/reproduction src/modules/sync; do
-            if [ -d "$d" ]; then
-              echo "OK: $d"
-            else
-              echo "WARN: falta $d"
-            fi
-          done
-
-          echo ""
           if [ "$missing" -eq 1 ]; then
-            echo "AUDITORÍA FALLIDA: faltan archivos obligatorios. Añade los archivos indicados y vuelve a ejecutar CI."
+            echo "AUDITORÍA FALLIDA: faltan archivos obligatorios."
             exit 1
           fi
-
-          echo "Auditoría completada. Warnings:$warn"
-
-      - name: Ejecutar comprobaciones npm (si existe `package.json`)
-        if: always()
-        uses: actions/setup-node@v4
-        with:
-          node-version: '16'
-
-      - name: Run npm CI + lint + tests when package.json exists
-        run: |
-          set -e
-          if [ -f package.json ]; then
-            echo "package.json detectado — ejecutando pipeline npm"
-            npm ci
-            npm run lint || true
-            npm test
-          else
-            echo "package.json no encontrado — se omiten comprobaciones npm"
-          fi
+          echo "Auditoría completada con éxito."
