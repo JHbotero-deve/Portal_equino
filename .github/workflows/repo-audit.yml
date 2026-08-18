@@ -2,12 +2,9 @@ name: Repo Audit
 
 on:
   push:
-    branches: [ main, master ]
+    branches: [ main, master, feature/reporte ]
   pull_request:
     branches: [ main, master ]
-  workflow_dispatch: {}
-  schedule:
-    - cron: '0 0 * * *'
 
 jobs:
   audit:
@@ -32,20 +29,18 @@ jobs:
             fi
           }
 
-          check_optional() {
-            if [ ! -e "$1" ]; then
-              echo "WARN: $1 (recommended)"
-              warn=1
-            else
-              echo "OK: $1"
-            fi
-          }
-
-          # Archivos/carpetas críticos
-          check_required package.json
+          # Archivos/carpetas críticos apuntando a frontend/backend
+          check_required frontend/package.json
           check_required README.md
           check_required .gitignore
+          check_required frontend/src
+          check_required frontend/src/modules
 
+          if [ "$missing" -eq 1 ]; then
+            echo "AUDITORÍA FALLIDA: faltan archivos obligatorios."
+            exit 1
+          fi
+          echo "Auditoría completada con éxito."
           # Infraestructura/BD
           check_optional prisma/schema.prisma
 
