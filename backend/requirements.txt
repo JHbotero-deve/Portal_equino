@@ -1,9 +1,10 @@
-fastapi==0.115.0
-uvicorn[standard]==0.30.6
-sqlalchemy==2.0.51
-pydantic==2.9.2
-typing-extensions==4.12.2
-
-# Para conectarte a SQL Server más adelante, cuando tu compañero la tenga lista,
-# descomenta esta línea e instala el driver ODBC de SQL Server en tu sistema:
-pyodbc==5.2.0
+fastapi
+uvicorn[standard]
+sqlalchemy
+pydantic
+typing-extensions
+python-dotenv
+email-validator
+python-jose[cryptography]
+passlib[bcrypt]
+# pyodbc  # Comentado porque requiere herramientas de compilación y no es necesario para SQLite
