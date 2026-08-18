@@ -42,6 +42,12 @@ async function parseErrorMessage(res: Response): Promise<string> {
   }
 }
 
+export async function checkApiHealth(): Promise<any> {
+  const res = await fetch("http://localhost:8000/health");
+  if (!res.ok) throw new Error("API fuera de línea");
+  return res.json();
+}
+
 export async function listarAnimales(filtros: Filtros = {}): Promise<Animal[]> {
   const params = new URLSearchParams();
   if (filtros.tag) params.set("tag", filtros.tag);

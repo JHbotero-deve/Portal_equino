@@ -1,6 +1,6 @@
 // Lógica de interfaz: maneja el formulario, la tabla y los filtros,
 // llamando a las funciones de api.ts.
-import { listarAnimales, registrarAnimal, eliminarAnimal, Animal, Filtros } from "./api.js";
+import { listarAnimales, registrarAnimal, eliminarAnimal, Animal, Filtros, checkApiHealth } from "./api.js";
 
 const form = document.getElementById("animal-form") as HTMLFormElement;
 const formError = document.getElementById("form-error") as HTMLParagraphElement;
@@ -11,6 +11,22 @@ const filterTagInput = document.getElementById("filter-tag") as HTMLInputElement
 const filterBreedInput = document.getElementById("filter-breed") as HTMLInputElement;
 const filterBtn = document.getElementById("filter-btn") as HTMLButtonElement;
 const clearFilterBtn = document.getElementById("clear-filter-btn") as HTMLButtonElement;
+
+const statusDot = document.getElementById("api-status-dot") as HTMLSpanElement;
+const statusText = document.getElementById("api-status-text") as HTMLSpanElement;
+
+async function actualizarEstadoApi(): Promise<void> {
+  try {
+    const health = await checkApiHealth();
+    statusDot.className = "w-2 h-2 rounded-full bg-emerald-500";
+    statusText.textContent = `API: Conectada (${health.database})`;
+    statusText.classList.replace("text-slate-500", "text-emerald-700");
+  } catch (err) {
+    statusDot.className = "w-2 h-2 rounded-full bg-red-500";
+    statusText.textContent = "API: Desconectada";
+    statusText.classList.replace("text-slate-500", "text-red-700");
+  }
+}
 
 function renderAnimales(animales: Animal[]): void {
   tableBody.innerHTML = "";
@@ -94,4 +110,5 @@ clearFilterBtn.addEventListener("click", () => {
 });
 
 // Carga inicial
+actualizarEstadoApi();
 cargarAnimales();
