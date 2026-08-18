@@ -41,3 +41,45 @@ jobs:
             exit 1
           fi
           echo "Auditoría completada con éxito."
+          # Infraestructura/BD
+          check_optional prisma/schema.prisma
+
+          # Código fuente
+          check_required src
+          check_required src/modules
+
+          # Módulos esperados (no obligatorios, se informan si faltan)
+          for d in src/modules/admin src/modules/auth src/modules/cattle src/modules/health src/modules/inventory src/modules/production src/modules/reports src/modules/reproduction src/modules/sync; do
+            if [ -d "$d" ]; then
+              echo "OK: $d"
+            else
+              echo "WARN: falta $d"
+            fi
+          done
+
+            echo ""
+            if [ "$missing" -eq 1 ]; then
+              echo "AUDITORÍA FALLIDA: faltan archivos obligatorios. Añade los archivos indicados y vuelve a ejecutar CI."
+              exit 1
+            fi
+
+          echo "Auditoría completada. Warnings:$warn"
+
+      - name: Ejecutar comprobaciones npm (si existe `package.json`)
+        if: always()
+        uses: actions/setup-node@v4
+        with:
+          node-version: '16'
+
+    
+      - name: Run npm CI when package.json exists
+        run: |
+          set -e
+          fi [ -f frontend/package.json ]; then
+            echo "frontend/package.json detectado — ejecutando pipeline npm"
+            cd frontend
+            npm install
+            npm run lint || true
+          else
+            echo "frontend/package.json no encontrado — se omiten comprobaciones npm"
+          fi
