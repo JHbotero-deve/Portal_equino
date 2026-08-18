@@ -1,13 +1,9 @@
--- =====================================================================
+﻿-- =====================================================================
 -- GAVAC - Esquema de base de datos (SQL Server)
--- Encargado: Elian Martínez
+-- Encargado: Elian Martinez
 --
 -- Este archivo es de referencia: documenta las tablas que existen
--- actualmente en la base de datos real "Gavac". Cada tabla corresponde
--- al modelo SQLAlchemy (models.py) definido en su respectivo módulo
--- de backend/app/modules/.
---
--- Si tu módulo aún no aparece aquí, avisa a Elian para agregar tu tabla.
+-- actualmente en la base de datos real "Gavac".
 -- =====================================================================
 
 -- Modulo: auth (Juan) -- backend/app/modules/auth/models.py
@@ -19,8 +15,7 @@ CREATE TABLE usuarios (
     created_at DATETIME2 DEFAULT SYSDATETIME()
 );
 
-
--- Módulo: cattle / ganado (Oscar) -- backend/app/modules/cattle/models.py
+-- Modulo: cattle / ganado (Oscar) -- backend/app/modules/cattle/models.py
 CREATE TABLE animales (
     id INT IDENTITY(1,1) PRIMARY KEY,
     tag VARCHAR(50) NOT NULL UNIQUE,
@@ -32,6 +27,9 @@ CREATE TABLE animales (
     updated_at DATETIME2 DEFAULT SYSDATETIME()
 );
 
-
-
--- Modulo: reportes (Jorge) -- pendiente
+-- Modulo: reportes (Jorge) -- estructura inicial, pendiente confirmar campos finales con Jorge
+CREATE TABLE reportes (
+    id INT IDENTITY(1,1) PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    created_at DATETIME2 DEFAULT SYSDATETIME()
+);
