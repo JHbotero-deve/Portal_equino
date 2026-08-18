@@ -1,3 +1,4 @@
+from app.modules.cattle.router import router as cattle_router
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
