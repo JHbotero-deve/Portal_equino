@@ -64,17 +64,21 @@ function renderAnimales(animales: Animal[]): void {
 }
 
 async function cargarAnimales(filtros: Filtros = {}): Promise<void> {
+  console.log("Cargando animales con filtros:", filtros);
   try {
     const animales = await listarAnimales(filtros);
+    console.log("Animales recibidos:", animales);
     renderAnimales(animales);
   } catch (err) {
-    formError.textContent = (err as Error).message;
+    console.error("Error al cargar animales:", err);
+    formError.textContent = "Error al conectar con la API. Verifica que el backend esté corriendo.";
   }
 }
 
 form.addEventListener("submit", async (event) => {
   event.preventDefault();
   formError.textContent = "";
+  console.log("Intentando registrar animal...");
 
   const formData = new FormData(form);
   const tag = String(formData.get("tag") ?? "").trim();
@@ -82,16 +86,23 @@ form.addEventListener("submit", async (event) => {
   const sex = String(formData.get("sex") ?? "").trim();
   const birthDate = String(formData.get("birth_date") ?? "").trim();
 
+  const animalData = {
+    tag,
+    breed: breed || undefined,
+    sex: (sex || undefined) as any,
+    birth_date: birthDate || undefined,
+  };
+
+  console.log("Enviando datos:", animalData);
+
   try {
-    await registrarAnimal({
-      tag,
-      breed: breed || undefined,
-      sex: (sex || undefined) as any,
-      birth_date: birthDate || undefined,
-    });
+    const nuevoAnimal = await registrarAnimal(animalData);
+    console.log("Registro exitoso:", nuevoAnimal);
+    alert("¡Animal registrado con éxito!");
     form.reset();
     await cargarAnimales();
   } catch (err) {
+    console.error("Error en registro:", err);
     formError.textContent = (err as Error).message;
   }
 });
