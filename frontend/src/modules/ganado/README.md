@@ -7,7 +7,7 @@ ganado/
 ├── api.ts     # Funciones fetch() hacia http://localhost:8000/api/ganado/...
 └── main.ts    # Lógica del formulario/tabla y manejo del DOM
 ```
-
+locla
 ## Pasos para empezar
 
 1. Crea `api.ts` con las funciones para listar, registrar, actualizar y eliminar animales (fetch hacia `/api/ganado`).
