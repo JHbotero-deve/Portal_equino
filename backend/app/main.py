@@ -20,6 +20,8 @@ from app.modules.cattle.models import Animal
 # ============================================================
 
 from app.modules.cattle.router import router as cattle_router
+from app.modules.auth.router import router as auth_router
+from app.modules.reportes.router import router as reportes_router
 
 
 # ============================================================
@@ -93,25 +95,26 @@ def index_page():
 
 
 # ============================================================
-# PÁGINA DE REGISTRO DE GANADO
+# PÁGINA DE REPORTES
 # ============================================================
 
-@app.get("/ganado")
-def ganado_page():
-
+@app.get("/reportes")
+def reportes_page():
     return FileResponse(
         os.path.join(
             frontend_dir,
-            "ganado.html"
+            "reportes.html"
         )
     )
 
 
 # ============================================================
-# RUTAS DEL MÓDULO DE GANADO
+# RUTAS DE LOS MÓDULOS
 # ============================================================
 
 app.include_router(cattle_router)
+app.include_router(auth_router)
+app.include_router(reportes_router)
 
 
 # ============================================================
