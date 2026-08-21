@@ -19,6 +19,8 @@ from app.modules.cattle.models import Animal
 # IMPORTAR ROUTERS
 # ============================================================
 from app.modules.cattle.router import router as cattle_router
+from app.modules.auth.router import router as auth_router
+from app.modules.reportes.router import router as reportes_router
 
 # ============================================================
 # CREAR APLICACIÓN FASTAPI
@@ -43,8 +45,6 @@ app.add_middleware(
 # ============================================================
 # CREAR TABLAS EN LA BASE DE DATOS
 # ============================================================
-# SQLAlchemy verificará Supabase y creará las tablas 'usuarios' y 'animales' 
-# si no existen todavía.
 try:
     Base.metadata.create_all(bind=engine)
     print("✅ Tablas verificadas/creadas exitosamente en la base de datos.")
@@ -81,10 +81,16 @@ def index_page():
 def ganado_page():
     return FileResponse(os.path.join(frontend_dir, "ganado.html"))
 
+@app.get("/reportes")
+def reportes_page():
+    return FileResponse(os.path.join(frontend_dir, "reportes.html"))
+
 # ============================================================
-# INCLUIR RUTAS DE LA API
+# INCLUIR RUTAS DE LA API (MÓDULOS)
 # ============================================================
 app.include_router(cattle_router)
+app.include_router(auth_router)
+app.include_router(reportes_router)
 
 # ============================================================
 # HEALTH CHECK (Para verificar que todo está vivo)
