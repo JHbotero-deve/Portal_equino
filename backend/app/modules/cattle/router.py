@@ -1,6 +1,4 @@
-"""
-Rutas del módulo cattle (ganado), montadas en /api/ganado desde main.py.
-"""
+
 from typing import Optional, List
 from fastapi import APIRouter, Depends, status
 from sqlalchemy.orm import Session
