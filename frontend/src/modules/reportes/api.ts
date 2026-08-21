@@ -14,7 +14,7 @@ export class ApiError extends Error {
   }
 }
 
-const REPORTS_URL = "http://localhost:8000/api/reportes/";
+const REPORTS_URL = "/api/reportes/";
 
 /** Obtiene los reportes disponibles para el usuario autenticado. */
 export async function getReports(accessToken: string): Promise<Report[]> {

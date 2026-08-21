@@ -28,4 +28,4 @@ class ReportService:
             email=usuario.email,
             detalles="Listado de animales recientes"
         )
-        return self._repo.get_animales_recientes(db)
+        return get_animales_recientes(db)

@@ -36,41 +36,6 @@
         </p>
     </div>
 
-    <script type="module">
-        // Este script será reemplazado por la lógica de Juan en main.ts
-        const form = document.getElementById('loginForm');
-        const message = document.getElementById('loginMessage');
-
-        form.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const email = document.getElementById('email').value;
-            const password = document.getElementById('password').value;
-
-            try {
-                const res = await fetch('/api/auth/login', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ email, password })
-                });
-
-                const data = await res.json();
-                if (res.ok) {
-                    localStorage.setItem('access_token', data.access_token);
-                    message.innerText = "✅ ¡Acceso concedido!";
-                    message.className = "mt-4 text-center text-sm font-medium text-emerald-600";
-                    message.classList.remove('hidden');
-                    setTimeout(() => window.location.href = "/ganado", 1000);
-                } else {
-                    message.innerText = "❌ " + (data.detail || "Error de credenciales");
-                    message.className = "mt-4 text-center text-sm font-medium text-red-600";
-                    message.classList.remove('hidden');
-                }
-            } catch (err) {
-                message.innerText = "❌ Error al conectar con el servidor";
-                message.className = "mt-4 text-center text-sm font-medium text-red-600";
-                message.classList.remove('hidden');
-            }
-        });
-    </script>
+    <script type="module" src="/static/dist/modules/auth/main.js"></script>
 </body>
 </html>

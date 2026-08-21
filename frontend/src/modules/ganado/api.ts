@@ -1,7 +1,7 @@
 // Capa de acceso a la API. Toda llamada al backend pasa por aquí,
 // así el resto del frontend no necesita saber las URLs exactas.
 
-const API_BASE = "http://127.0.0.1:8000/api/ganado";
+const API_BASE = "/api/ganado";
 
 export type Sexo = "macho" | "hembra";
 export type Estado = "active" | "inactive" | "sold" | "deceased";
@@ -43,7 +43,7 @@ async function parseErrorMessage(res: Response): Promise<string> {
 }
 
 export async function checkApiHealth(): Promise<any> {
-  const res = await fetch("http://127.0.0.1:8000/health");
+  const res = await fetch("/health");
   if (!res.ok) throw new Error("API fuera de línea");
   return res.json();
 }
