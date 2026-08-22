@@ -43,8 +43,28 @@ root_dir = os.path.normpath(os.path.join(current_file_dir, "..", ".."))
 frontend_dir = os.path.join(root_dir, "frontend")
 
 # Servir el frontend desde /static
+from starlette.responses import Response
+from starlette.staticfiles import StaticFiles as _StaticFiles
+
+class NoCacheStaticFiles(_StaticFiles):
+    async def get_response(self, path: str, scope) -> Response:
+        response = await super().get_response(path, scope)
+        response.headers["Cache-Control"] = "no-store, no-cache, must-revalidate, max-age=0"
+        return response
+
+# Servir el frontend desde /static
+from starlette.responses import Response
+from starlette.staticfiles import StaticFiles as _StaticFiles
+
+class NoCacheStaticFiles(_StaticFiles):
+    async def get_response(self, path: str, scope) -> Response:
+        response = await super().get_response(path, scope)
+        response.headers["Cache-Control"] = "no-store, no-cache, must-revalidate, max-age=0"
+        return response
+
+# Servir el frontend desde /static
 if os.path.exists(frontend_dir):
-    app.mount("/static", StaticFiles(directory=frontend_dir), name="static")
+    app.mount("/static", NoCacheStaticFiles(directory=frontend_dir), name="static")
 
 # VISTAS PÚBLICAS
 @app.get("/")

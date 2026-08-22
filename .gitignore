@@ -39,6 +39,7 @@ venv/
 .venv/
 backend/venv/
 backend/venv311/
+backend/venv_stable/      # <--- SOLO AGREGA ESTA LÍNEA
 
 # Ignorar logs del backend
 backend/*.log

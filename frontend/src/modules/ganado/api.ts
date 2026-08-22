@@ -1,7 +1,4 @@
-// Capa de acceso a la API. Toda llamada al backend pasa por aquí,
-// así el resto del frontend no necesita saber las URLs exactas.
-
-const API_BASE = "/api/ganado";
+﻿const API_BASE = "/api/ganado";
 
 export type Sexo = "macho" | "hembra";
 export type Estado = "active" | "inactive" | "sold" | "deceased";
@@ -29,22 +26,26 @@ export interface Filtros {
   breed?: string;
 }
 
+function authHeaders(): Record<string, string> {
+  const token = localStorage.getItem("gavac_token");
+  return token ? { Authorization: `Bearer ${token}` } : {};
+}
+
 async function parseErrorMessage(res: Response): Promise<string> {
   try {
     const body = await res.json();
     if (Array.isArray(body.detail)) {
-      // Errores de validación de FastAPI (422): lista de objetos
       return body.detail.map((d: any) => d.msg).join(", ");
     }
-    return body.detail ?? "Ocurrió un error inesperado.";
+    return body.detail ?? "Ocurrio un error inesperado.";
   } catch {
-    return "Ocurrió un error inesperado.";
+    return "Ocurrio un error inesperado.";
   }
 }
 
 export async function checkApiHealth(): Promise<any> {
   const res = await fetch("/health");
-  if (!res.ok) throw new Error("API fuera de línea");
+  if (!res.ok) throw new Error("API fuera de linea");
   return res.json();
 }
 
@@ -53,7 +54,9 @@ export async function listarAnimales(filtros: Filtros = {}): Promise<Animal[]> {
   if (filtros.tag) params.set("tag", filtros.tag);
   if (filtros.breed) params.set("breed", filtros.breed);
 
-  const res = await fetch(`${API_BASE}/?${params.toString()}`);
+  const res = await fetch(`${API_BASE}/?${params.toString()}`, {
+    headers: { ...authHeaders() },
+  });
   if (!res.ok) throw new Error(await parseErrorMessage(res));
   return res.json();
 }
@@ -61,7 +64,10 @@ export async function listarAnimales(filtros: Filtros = {}): Promise<Animal[]> {
 export async function registrarAnimal(data: AnimalInput): Promise<Animal> {
   const res = await fetch(`${API_BASE}/`, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: {
+      "Content-Type": "application/json",
+      ...authHeaders(),
+    },
     body: JSON.stringify(data),
   });
   if (!res.ok) throw new Error(await parseErrorMessage(res));
@@ -69,6 +75,9 @@ export async function registrarAnimal(data: AnimalInput): Promise<Animal> {
 }
 
 export async function eliminarAnimal(id: number): Promise<void> {
-  const res = await fetch(`${API_BASE}/${id}`, { method: "DELETE" });
+  const res = await fetch(`${API_BASE}/${id}`, {
+    method: "DELETE",
+    headers: { ...authHeaders() },
+  });
   if (!res.ok) throw new Error(await parseErrorMessage(res));
 }
