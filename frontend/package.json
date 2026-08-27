@@ -5,7 +5,7 @@
   "scripts": {
     "build": "tsc",
     "watch": "tsc --watch",
-    "start": "live-server --open=./index.html"
+    "start": "live-server --port=5432 --open=./index.html"
   },
   "devDependencies": {
     "autoprefixer": "^10.4.16",

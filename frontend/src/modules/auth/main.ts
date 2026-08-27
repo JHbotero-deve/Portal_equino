@@ -157,8 +157,9 @@ form.addEventListener("submit", async (e) => {
             // ========================================
 
             setTimeout(() => {
+                // Redirigimos a /ganado/ para mayor compatibilidad con rutas de FastAPI
                 window.location.href = "/ganado";
-            }, 5432);
+            }, 800);
         }
 
     } catch (err: unknown) {
@@ -178,6 +179,5 @@ form.addEventListener("submit", async (e) => {
     } finally {
 
         submitBtn.disabled = false;
-
     }
 });

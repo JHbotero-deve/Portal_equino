@@ -1,10 +1,10 @@
-﻿// ============================================
+// ============================================
 // API GAVAC - GANADO
 // Frontend -> FastAPI -> PostgreSQL/Supabase
 // ============================================
 
-const API_BASE = "http://127.0.0.1:5432/api/ganado";
-const API_HEALTH = "http://127.0.0.1:5432/health";
+const API_BASE = "http://127.0.0.1:8000/api/ganado";
+const API_HEALTH = "http://127.0.0.1:8000/health";
 
 // ============================================
 // TIPOS
@@ -202,8 +202,8 @@ export async function listarAnimales(
           "Tu sesión no es válida. Debes iniciar sesión nuevamente."
         );
 
-        window.location.href =
-          "/src/modules/auth/index.html";
+        // Redirigimos a la página de login organizada
+        window.location.href = "/login";
 
         return [];
       }

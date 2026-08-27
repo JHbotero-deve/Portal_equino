@@ -50,8 +50,8 @@ app.add_middleware(
     allow_origins=[
         "http://127.0.0.1:5432",
         "http://localhost:5432",
-        "http://127.0.0.1:5432",
-        "http://localhost:5432",
+        "http://127.0.0.1:8000",
+        "http://localhost:8000",
     ],
     allow_credentials=True,
     allow_methods=["*"],
@@ -150,16 +150,11 @@ def root():
 
 @app.get("/login")
 def login_page():
-
-    return FileResponse(
-        os.path.join(
-            frontend_dir,
-            "src",
-            "modules",
-            "auth",
-            "index.html"
-        )
-    )
+    # Usamos la nueva ruta organizada en la raíz del frontend
+    path = os.path.join(frontend_dir, "index.html")
+    if os.path.exists(path):
+        return FileResponse(path)
+    return FileResponse(os.path.join(frontend_dir, "src", "modules", "auth", "index.html"))
 
 
 # ============================================
@@ -168,16 +163,11 @@ def login_page():
 
 @app.get("/ganado")
 def ganado_page():
-
-    return FileResponse(
-        os.path.join(
-            frontend_dir,
-            "src",
-            "modules",
-            "ganado",
-            "index.html"
-        )
-    )
+    # Usamos la nueva ruta organizada
+    path = os.path.join(frontend_dir, "ganado", "index.html")
+    if os.path.exists(path):
+        return FileResponse(path)
+    return FileResponse(os.path.join(frontend_dir, "src", "modules", "ganado", "index.html"))
 
 
 # ============================================
