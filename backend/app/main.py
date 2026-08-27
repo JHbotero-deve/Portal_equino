@@ -73,11 +73,11 @@ def root():
 
 @app.get("/login")
 def login_page():
-    return FileResponse(os.path.join(frontend_dir, "src/modules/auth/index.html"))
+    return FileResponse(os.path.join(frontend_dir, "index.html"))
 
 @app.get("/ganado")
 def ganado_page():
-    return FileResponse(os.path.join(frontend_dir, "src/modules/ganado/index.html"))
+    return FileResponse(os.path.join(frontend_dir, "ganado/index.html"))
 
 @app.get("/reportes")
 def reportes_page():

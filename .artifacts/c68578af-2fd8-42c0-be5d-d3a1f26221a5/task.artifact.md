@@ -1,0 +1,8 @@
+- [x] Reorganizar rutas para navegación limpia (/ganado)
+    - [x] Crear carpeta `frontend/ganado` y mover `index.html` allí
+    - [x] Actualizar redirección en `auth/main.ts`
+    - [x] Ajustar `backend/app/main.py`
+- [x] Verificar scripts y compilación
+- [x] Configurar puerto 5432 en `frontend/package.json`
+- [x] Corregir URLs de API en `frontend/src/modules/ganado/api.ts`
+- [x] Resolver conflictos de dependencias en `backend/requirements.txt`

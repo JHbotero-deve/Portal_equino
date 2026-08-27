@@ -46,7 +46,7 @@ form.addEventListener("submit", async (e) => {
       localStorage.setItem("gavac_usuario", JSON.stringify(resultado.usuario));
       mostrarMensaje("✅ Sesión iniciada. Redirigiendo...", "exito");
       setTimeout(() => {
-        window.location.href = "/ganado";
+        window.location.href = "/ganado/";
       }, 800);
     }
   } catch (err: any) {

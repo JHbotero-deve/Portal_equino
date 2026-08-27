@@ -1,4 +1,4 @@
-﻿const API_BASE = "/api/ganado";
+﻿const API_BASE = "http://127.0.0.1:8000/api/ganado";
 
 export type Sexo = "macho" | "hembra";
 export type Estado = "active" | "inactive" | "sold" | "deceased";
@@ -44,7 +44,7 @@ async function parseErrorMessage(res: Response): Promise<string> {
 }
 
 export async function checkApiHealth(): Promise<any> {
-  const res = await fetch("/health");
+  const res = await fetch("http://127.0.0.1:8000/health");
   if (!res.ok) throw new Error("API fuera de linea");
   return res.json();
 }

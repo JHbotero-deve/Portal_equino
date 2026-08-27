@@ -1,10 +1,7 @@
 // Lógica de interfaz: maneja el formulario, la tabla y los filtros,
 // llamando a las funciones de api.ts.
 
-import express from "express";
-import cors from "cors";
-import helmet from "helmet";
-import dotenv from "dotenv";
+
 import { listarAnimales, registrarAnimal, eliminarAnimal, Animal, Filtros, checkApiHealth } from "./api.js";
 
 const form = document.getElementById("animal-form") as HTMLFormElement;
