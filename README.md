@@ -59,7 +59,7 @@ pip install -r requirements.txt
 cp .env.example .env
 uvicorn app.main:app --reload --port 8000
 ```
-Documentación interactiva de la API: http://localhost:8000/docs
+Documentación interactiva de la API: http://localhost:5432/docs
 
 ### Frontend
 ```bash

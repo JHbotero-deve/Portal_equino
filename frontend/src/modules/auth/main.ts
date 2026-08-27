@@ -9,49 +9,175 @@ const messageBox = document.getElementById("loginMessage") as HTMLDivElement;
 
 let modoRegistro = false;
 
-function mostrarMensaje(texto: string, tipo: "error" | "exito") {
-  messageBox.textContent = texto;
-  messageBox.classList.remove("hidden", "text-red-600", "text-emerald-700");
-  messageBox.classList.add(tipo === "error" ? "text-red-600" : "text-emerald-700");
+// ============================================
+// MOSTRAR MENSAJES
+// ============================================
+
+function mostrarMensaje(
+    texto: string,
+    tipo: "error" | "exito"
+): void {
+    messageBox.textContent = texto;
+
+    messageBox.classList.remove(
+        "hidden",
+        "text-red-600",
+        "text-emerald-700"
+    );
+
+    messageBox.classList.add(
+        tipo === "error"
+            ? "text-red-600"
+            : "text-emerald-700"
+    );
 }
 
+// ============================================
+// CAMBIAR LOGIN / REGISTRO
+// ============================================
+
 toggleLink.addEventListener("click", (e) => {
-  e.preventDefault();
-  modoRegistro = !modoRegistro;
-  submitBtn.textContent = modoRegistro ? "Registrarme" : "Iniciar Sesión";
-  toggleLink.textContent = modoRegistro
-    ? "¿Ya tienes cuenta? Inicia sesión"
-    : "¿No tienes cuenta? Regístrate";
-  messageBox.classList.add("hidden");
+    e.preventDefault();
+
+    modoRegistro = !modoRegistro;
+
+    submitBtn.textContent = modoRegistro
+        ? "Registrarme"
+        : "Iniciar Sesión";
+
+    toggleLink.textContent = modoRegistro
+        ? "¿Ya tienes cuenta? Inicia sesión"
+        : "¿No tienes cuenta? Regístrate";
+
+    messageBox.classList.add("hidden");
+
+    passwordInput.value = "";
 });
 
+// ============================================
+// LOGIN / REGISTRO
+// ============================================
+
 form.addEventListener("submit", async (e) => {
-  e.preventDefault();
-  messageBox.classList.add("hidden");
-  submitBtn.disabled = true;
+    e.preventDefault();
 
-  const email = emailInput.value.trim();
-  const password = passwordInput.value;
+    messageBox.classList.add("hidden");
+    submitBtn.disabled = true;
 
-  try {
-    if (modoRegistro) {
-      await registrar({ email, password });
-      mostrarMensaje("✅ Cuenta creada. Ahora inicia sesión.", "exito");
-      modoRegistro = false;
-      submitBtn.textContent = "Iniciar Sesión";
-      toggleLink.textContent = "¿No tienes cuenta? Regístrate";
-    } else {
-      const resultado = await login({ email, password });
-      localStorage.setItem("gavac_token", resultado.access_token);
-      localStorage.setItem("gavac_usuario", JSON.stringify(resultado.usuario));
-      mostrarMensaje("✅ Sesión iniciada. Redirigiendo...", "exito");
-      setTimeout(() => {
-        window.location.href = "/ganado/";
-      }, 800);
+    const email = emailInput.value.trim();
+    const password = passwordInput.value;
+
+    if (!email || !password) {
+        mostrarMensaje(
+            "Debes ingresar email y contraseña.",
+            "error"
+        );
+
+        submitBtn.disabled = false;
+        return;
     }
-  } catch (err: any) {
-    mostrarMensaje(`⚠️ ${err.message}`, "error");
-  } finally {
-    submitBtn.disabled = false;
-  }
+
+    try {
+
+        // ========================================
+        // REGISTRO
+        // ========================================
+
+        if (modoRegistro) {
+
+            console.log("Creando cuenta...");
+
+            await registrar({
+                email,
+                password,
+            });
+
+            mostrarMensaje(
+                "✅ Cuenta creada correctamente. Ahora inicia sesión.",
+                "exito"
+            );
+
+            modoRegistro = false;
+
+            submitBtn.textContent = "Iniciar Sesión";
+
+            toggleLink.textContent =
+                "¿No tienes cuenta? Regístrate";
+
+            passwordInput.value = "";
+
+        }
+
+        // ========================================
+        // LOGIN
+        // ========================================
+
+        else {
+
+            console.log("Iniciando sesión...");
+
+            const resultado = await login({
+                email,
+                password,
+            });
+
+            console.log("Login exitoso.");
+            console.log("Usuario:", resultado.usuario);
+
+            // ========================================
+            // GUARDAR TOKEN
+            // ========================================
+
+            localStorage.setItem(
+                "gavac_token",
+                resultado.access_token
+            );
+
+            // ========================================
+            // GUARDAR USUARIO
+            // ========================================
+
+            localStorage.setItem(
+                "gavac_usuario",
+                JSON.stringify(resultado.usuario)
+            );
+
+            console.log(
+                "Token guardado:",
+                localStorage.getItem("gavac_token")
+            );
+
+            mostrarMensaje(
+                "✅ Sesión iniciada. Redirigiendo...",
+                "exito"
+            );
+
+            // ========================================
+            // REDIRECCIÓN CORRECTA
+            // ========================================
+
+            setTimeout(() => {
+                // Redirigimos a /ganado/ para mayor compatibilidad con rutas de FastAPI
+                window.location.href = "/ganado";
+            }, 800);
+        }
+
+    } catch (err: unknown) {
+
+        console.error("Error:", err);
+
+        const mensaje =
+            err instanceof Error
+                ? err.message
+                : "Ocurrió un error inesperado.";
+
+        mostrarMensaje(
+            `⚠️ ${mensaje}`,
+            "error"
+        );
+
+    } finally {
+
+        submitBtn.disabled = false;
+    }
 });
