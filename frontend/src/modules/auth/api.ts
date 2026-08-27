@@ -1,4 +1,9 @@
-﻿const API_BASE = "/api/auth";
+﻿// ============================================
+// API DE AUTENTICACIÓN - GAVAC
+// Frontend -> FastAPI
+// ============================================
+
+const API_BASE = "http://127.0.0.1:5432/api/auth";
 
 export interface UsuarioCreate {
   email: string;
@@ -23,43 +28,94 @@ export interface Token {
   usuario: UsuarioOut;
 }
 
+// ============================================
+// MANEJO DE ERRORES
+// ============================================
+
 async function parseErrorMessage(response: Response): Promise<string> {
   try {
     const data = await response.json();
-    if (typeof data.detail === "string") return data.detail;
-    if (Array.isArray(data.detail)) {
-      return data.detail.map((d: any) => d.msg).join(", ");
+
+    if (typeof data.detail === "string") {
+      return data.detail;
     }
-    return "Ocurrio un error inesperado.";
+
+    if (Array.isArray(data.detail)) {
+      return data.detail
+        .map((d: any) => d.msg || "Error de validación")
+        .join(", ");
+    }
+
+    return `Error HTTP ${response.status}`;
   } catch {
-    return "Ocurrio un error inesperado.";
+    return `Error HTTP ${response.status}: ${response.statusText}`;
   }
 }
 
-export async function registrar(datos: UsuarioCreate): Promise<UsuarioOut> {
+// ============================================
+// REGISTRAR USUARIO
+// ============================================
+
+export async function registrar(
+  datos: UsuarioCreate
+): Promise<UsuarioOut> {
+
+  console.log("Registrando usuario:", datos.email);
+
   const response = await fetch(`${API_BASE}/register`, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: {
+      "Content-Type": "application/json",
+      Accept: "application/json",
+    },
     body: JSON.stringify(datos),
   });
+
+  console.log("Respuesta register:", response.status);
 
   if (!response.ok) {
     throw new Error(await parseErrorMessage(response));
   }
 
-  return response.json();
+  const usuario = await response.json();
+
+  console.log("Usuario registrado:", usuario);
+
+  return usuario;
 }
 
-export async function login(datos: UsuarioLogin): Promise<Token> {
+// ============================================
+// LOGIN
+// ============================================
+
+export async function login(
+  datos: UsuarioLogin
+): Promise<Token> {
+
+  console.log("Intentando iniciar sesión:", datos.email);
+
   const response = await fetch(`${API_BASE}/login`, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: {
+      "Content-Type": "application/json",
+      Accept: "application/json",
+    },
     body: JSON.stringify(datos),
   });
 
+  console.log("Respuesta login:", response.status);
+
   if (!response.ok) {
-    throw new Error(await parseErrorMessage(response));
+    const error = await parseErrorMessage(response);
+
+    console.error("Error login:", error);
+
+    throw new Error(error);
   }
 
-  return response.json();
+  const resultado = await response.json();
+
+  console.log("Login exitoso:", resultado);
+
+  return resultado as Token;
 }
