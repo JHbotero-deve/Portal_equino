@@ -1,46 +1,39 @@
-# Plan de Organización de Rutas y Configuración de Puerto
+# Plan de Organización del Workflow (CI/CD y PRs)
 
-Este plan detalla los pasos para organizar las rutas del frontend, configurar el puerto 5432 y asegurar la correcta comunicación con el backend de FastAPI y la base de datos Supabase.
+Este plan tiene como objetivo estandarizar y automatizar el flujo de trabajo para las Pull Requests, asegurando que cada cambio mantenga la calidad del código y la integridad del sistema.
 
 ## User Review Required
 
 > [!IMPORTANT]
-> El puerto **5432** es el puerto por defecto de PostgreSQL/Supabase. Configurar el frontend en este puerto es inusual, pero se realizará según lo solicitado. Asegúrate de que no haya una instancia local de PostgreSQL corriendo en ese puerto, ya que causará conflicto.
+> El archivo `PULL_REQUEST_TEMPLATE.md` actual menciona herramientas como **Prisma** o comandos como `npm test` que no están configurados en el proyecto. Se propone actualizarlos para reflejar la realidad del proyecto (SQLAlchemy y TypeScript).
 
 > [!NOTE]
-> Se recomienda centralizar las rutas del frontend moviendo las páginas principales a la raíz de la carpeta `frontend` para facilitar la navegación con `live-server`.
+> Se recomienda añadir `flake8` y `pytest` al backend en el futuro para una validación más profunda. Por ahora, nos centraremos en lo que el repositorio ya tiene.
 
 ## Proposed Changes
 
-### Frontend
+### GitHub Workflows
 
-#### [MODIFY] [package.json](file:///C:/proyecto_Final_Gavac/GAVAC/frontend/package.json)
-- Cambiar el script `start` para usar el puerto 5432: `live-server --port=5432 --open=./index.html`.
+#### [MODIFY] [repo-audit.yml](file:///C:/proyecto_Final_Gavac/GAVAC/.github/workflows/repo-audit.yml)
+- Ampliar el flujo para incluir un paso de **Build Check** del frontend usando `tsc`. Esto garantizará que ninguna PR se mezcle si tiene errores de tipos en TypeScript.
+- Añadir validación de sintaxis básica para Python.
 
-#### [NEW] [ganado.html](file:///C:/proyecto_Final_Gavac/GAVAC/frontend/ganado.html)
-- Mover/Copiar el contenido de `src/modules/ganado/index.html` a la raíz para que sea accesible como `ganado.html`.
-- Corregir las rutas de los scripts para que funcionen con `live-server`.
+### Plantillas de Repositorio
 
-#### [MODIFY] [main.ts (Auth)](file:///C:/proyecto_Final_Gavac/GAVAC/frontend/src/modules/auth/main.ts)
-- Cambiar la redirección post-login de `/ganado` a `/ganado.html`.
+#### [MODIFY] [PULL_REQUEST_TEMPLATE.md](file:///C:/proyecto_Final_Gavac/GAVAC/.github/PULL_REQUEST_TEMPLATE.md)
+- Ajustar el checklist para mencionar la base de datos **Supabase/SQLAlchemy** en lugar de Prisma.
+- Actualizar los comandos de validación local recomendados.
 
-#### [DELETE] [index.html (Auth Module)](file:///C:/proyecto_Final_Gavac/GAVAC/frontend/src/modules/auth/index.html)
-- Eliminar archivos redundantes si se decide usar el `index.html` de la raíz como única entrada de login.
+### Documentación de Auditoría
 
-### Backend
-
-#### [MODIFY] [main.py](file:///C:/proyecto_Final_Gavac/GAVAC/backend/app/main.py)
-- Actualizar las rutas de `FileResponse` para que coincidan con la nueva ubicación de los archivos HTML en el frontend.
+#### [MODIFY] [1_revision.txt](file:///C:/proyecto_Final_Gavac/GAVAC/docs/sections/1_revision.txt) (Si existe)
+- Revisar si las guías de revisión están alineadas con la nueva estructura modular.
 
 ## Verification Plan
 
 ### Automated Tests
-- No se requieren tests automatizados complejos, se verificará manualmente la navegación.
+- Ejecutar el workflow localmente (si se dispone de herramientas de simulación como `act`) o disparar un evento de push para verificar que el nuevo `repo-audit.yml` no falle por errores de sintaxis en el YAML.
 
 ### Manual Verification
-1. Ejecutar el backend: `python -m app.main` (o el comando correspondiente).
-2. Ejecutar el frontend: `npm start` desde la carpeta `frontend`.
-3. Verificar que el navegador abra `localhost:5432` mostrando el login.
-4. Probar el registro de un nuevo usuario.
-5. Iniciar sesión y verificar la redirección exitosa a la página de Ganado (`ganado.html`).
-6. Verificar que la página de Ganado cargue los datos desde la API (conectada a Supabase).
+1. Crear una rama de prueba y abrir una PR ficticia para ver cómo se visualiza el nuevo template.
+2. Verificar que el paso de compilación de TypeScript (`tsc`) se ejecute correctamente en el entorno de GitHub Actions.
