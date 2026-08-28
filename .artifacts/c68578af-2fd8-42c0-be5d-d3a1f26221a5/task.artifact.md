@@ -1,7 +1,6 @@
-- [x] Rediseño Premium de GAVAC
-    - [x] Implementar UI moderna en Login (`index.html`)
-    - [x] Implementar UI moderna en Gestión de Ganado (`ganado/index.html`)
-    - [x] Integrar Lucide Icons y animaciones
-    - [x] Asegurar responsividad (Móvil y Escritorio)
-- [x] Compilar y verificar integridad visual
-- [x] Realizar commit y push de la versión Premium
+- [/] Restaurar diseño "Esmeralda Profesional" (Solo Local)
+    - [/] Rediseñar Login (`index.html`)
+    - [ ] Rediseñar Panel de Ganado (`ganado/index.html`)
+    - [ ] Verificar carga de fuentes y Tailwind
+- [ ] Esperar aprobación visual del usuario
+- [ ] Realizar commit y push (Solo tras aprobación)
