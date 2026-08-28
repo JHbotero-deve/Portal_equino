@@ -3,8 +3,8 @@
 // Frontend -> FastAPI -> PostgreSQL/Supabase
 // ============================================
 
-const API_BASE = "http://127.0.0.1:8000/api/ganado";
-const API_HEALTH = "http://127.0.0.1:8000/health";
+const API_BASE = "/api/ganado";
+const API_HEALTH = "/health";
 
 // ============================================
 // TIPOS

@@ -3,7 +3,7 @@
 // Frontend -> FastAPI
 // ============================================
 
-const API_BASE = "http://127.0.0.1:8000/api/auth";
+const API_BASE = "/api/auth";
 
 export interface UsuarioCreate {
   email: string;

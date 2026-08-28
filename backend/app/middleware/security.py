@@ -20,7 +20,7 @@ class SecurityHeadersMiddleware:
                     (b"X-Frame-Options", b"DENY"),
                     (b"X-XSS-Protection", b"1; mode=block"),
                     (b"Strict-Transport-Security", b"max-age=31536000; includeSubDomains"),
-                    (b"Content-Security-Policy", b"default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.tailwindcss.com; style-src 'self' 'unsafe-inline'; img-src 'self' data:;"),
+                    (b"Content-Security-Policy", b"default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.tailwindcss.com; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self' http://127.0.0.1:8000 http://localhost:8000;"),
                     (b"Referrer-Policy", b"strict-origin-when-cross-origin"),
                     (b"X-Permitted-Cross-Domain-Policies", b"none"),
                 ]

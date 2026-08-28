@@ -3,7 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "build": "tsc",
+    "build:ts": "tsc",
+    "build:css": "tailwindcss -i ./src/style.css -o ./dist/output.css",
+    "build": "npm run build:ts && npm run build:css",
     "watch": "tsc --watch",
     "start": "live-server --port=5434 --open=./index.html"
   },

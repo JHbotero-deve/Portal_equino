@@ -23,7 +23,19 @@ pip install -r backend/requirements.txt
 
 ---
 
-## 2️⃣ Configuración de Base de Datos
+## 2️⃣ Compilación de Estilos y Código (Frontend)
+
+Para que el diseño se vea correctamente y sin errores de Tailwind:
+
+```powershell
+cd frontend
+npm install
+npm run build
+```
+
+---
+
+## 3️⃣ Configuración de Base de Datos
 
 Asegúrate de tener el archivo `.env` en la carpeta `backend`:
 1. Crea la copia: `cp backend/.env.example backend/.env`
@@ -31,7 +43,7 @@ Asegúrate de tener el archivo `.env` en la carpeta `backend`:
 
 ---
 
-## 3️⃣ Ejecución del Servidor (Modo Producción)
+## 4️⃣ Ejecución del Servidor (Modo Producción)
 
 Cada vez que inicies el sistema, usa este bloque en tu terminal:
 
@@ -55,7 +67,6 @@ python -m uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
 
 *   **Ruta API:** [http://localhost:8000/docs](http://localhost:8000/docs)
 *   **Ruta Web:** [http://localhost:8000/login](http://localhost:8000/login)
-*   **Versión Python:** Debe ser **3.11.x** (verifica con `python --version`).
 *   **Seguridad:** Cabeceras HSTS, CSP y X-Frame activadas automáticamente.
 
 > [!IMPORTANT]
