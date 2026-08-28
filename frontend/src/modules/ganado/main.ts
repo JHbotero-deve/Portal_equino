@@ -36,19 +36,41 @@ function renderAnimales(animales: Animal[]): void {
 
   for (const animal of animales) {
     const tr = document.createElement("tr");
+    tr.className = "hover:bg-slate-50/80 transition-colors group";
     tr.innerHTML = `
-      <td class="px-4 py-3 font-medium text-slate-800">${animal.tag}</td>
-      <td class="px-4 py-3 text-slate-600">${animal.breed ?? "—"}</td>
-      <td class="px-4 py-3 text-slate-600">${animal.sex ?? "—"}</td>
-      <td class="px-4 py-3 text-slate-600">${animal.birth_date ?? "—"}</td>
-      <td class="px-4 py-3">
-        <span class="text-xs px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-100 font-medium">${animal.status}</span>
+      <td class="px-6 py-5">
+        <div class="flex items-center gap-3">
+          <div class="w-8 h-8 rounded-lg bg-emerald-100 flex items-center justify-center text-emerald-700">
+            <i data-lucide="tag" class="w-4 h-4"></i>
+          </div>
+          <span class="font-bold text-slate-900">${animal.tag}</span>
+        </div>
       </td>
-      <td class="px-4 py-3">
-        <button data-id="${animal.id}" class="delete-btn text-red-600 hover:text-red-700 hover:underline text-xs font-medium">Eliminar</button>
+      <td class="px-6 py-5">
+        <div class="flex flex-col">
+          <span class="text-sm font-semibold text-slate-700">${animal.breed ?? "Sin Raza"}</span>
+          <span class="text-[10px] text-slate-400 uppercase font-bold tracking-tight">${animal.sex ?? "—"} • ${animal.birth_date ?? "Sin fecha"}</span>
+        </div>
+      </td>
+      <td class="px-6 py-5">
+        <span class="status-badge px-2.5 py-1 rounded-lg bg-emerald-50 text-emerald-700 border border-emerald-100 inline-flex items-center gap-1.5">
+          <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+          ${animal.status}
+        </span>
+      </td>
+      <td class="px-6 py-5">
+        <button data-id="${animal.id}" class="delete-btn p-2 rounded-lg text-slate-400 hover:text-red-600 hover:bg-red-50 transition-all opacity-0 group-hover:opacity-100">
+          <i data-lucide="trash-2" class="w-5 h-5"></i>
+        </button>
       </td>
     `;
     tableBody.appendChild(tr);
+  }
+
+  // @ts-ignore
+  if (window.lucide) {
+    // @ts-ignore
+    window.lucide.createIcons();
   }
 
   document.querySelectorAll<HTMLButtonElement>(".delete-btn").forEach((btn) => {

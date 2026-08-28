@@ -1,30 +1,35 @@
-# Plan de Configuración de Puerto 5434 para el Frontend
+# Plan de Rediseño Premium para GAVAC
 
-Este plan configura el puerto **5434** para el frontend, permitiendo su ejecución independiente mientras se comunica con el backend en el puerto **8000**.
+Este plan transformará la interfaz básica de GAVAC en una aplicación moderna, con diseño "Senior UI", utilizando técnicas avanzadas de Tailwind CSS y principios de experiencia de usuario (UX).
 
 ## User Review Required
 
 > [!IMPORTANT]
-> El puerto **5434** se utilizará para el servidor de desarrollo del frontend (`live-server`).
-> El backend continuará operando en el puerto **8000**.
-> Se debe asegurar que el puerto **5434** esté libre en el sistema.
+> El rediseño se centrará en los archivos HTML principales. No afectará la lógica del backend ni de la base de datos Supabase, pero hará que la aplicación se sienta mucho más profesional.
+
+> [!NOTE]
+> Utilizaremos la librería **Lucide Icons** y **Animate.css** (vía CDN) para añadir interactividad visual sin aumentar la complejidad del código.
 
 ## Proposed Changes
 
-### Frontend
+### Identidad Visual
+- **Paleta de Colores**: Verde Esmeralda (#065f46), Pizarra Profunda (#0f172a) y acentos en Oro Mate para elementos de estatus.
+- **Tipografía**: Optimización del uso de **Inter** con jerarquías claras.
 
-#### [MODIFY] [package.json](file:///C:/proyecto_Final_Gavac/GAVAC/frontend/package.json)
-- Cambiar el script `start` para usar el puerto **5434**: `live-server --port=5434 --open=./index.html`.
+### Pantalla de Login (index.html)
+- **Fondo Dinámico**: Sustitución del fondo plano por un degradado radial con malla de ruido sutil.
+- **Card Premium**: Efecto de cristal esmerilado (glassmorphism) con borde degradado.
+- **Micro-interacciones**: Transiciones suaves al alternar entre login y registro.
 
-### Backend
-
-#### [MODIFY] [main.py](file:///C:/proyecto_Final_Gavac/GAVAC/backend/app/main.py)
-- Añadir `http://127.0.0.1:5434` y `http://localhost:5434` a la lista de orígenes permitidos en el middleware de CORS.
+### Gestión de Ganado (ganado/index.html)
+- **Layout de Dashboard**: Implementación de una barra lateral (sidebar) colapsable o navegación superior moderna.
+- **Tablas de Datos**: Estilo de tarjetas para dispositivos móviles y tablas con filas cebra sutiles y estados de hover.
+- **Botones de Acción**: Iconografía clara y estados de carga animados.
 
 ## Verification Plan
 
 ### Manual Verification
-1.  **Frontend**: Ejecutar `npm start` en la carpeta `frontend`. Verificar que se abra el navegador en `http://localhost:5434`.
-2.  **Backend**: Ejecutar `uvicorn app.main:app --reload --port 8000` en la carpeta `backend`.
-3.  **Login**: Intentar iniciar sesión desde el frontend (5434). Verificar que la petición llegue al backend (8000) y el login sea exitoso.
-4.  **Redirección**: Confirmar que tras el login, el sistema te lleve a la página de ganado.
+1. Abrir `http://localhost:5434` (o el puerto configurado).
+2. Verificar la nueva estética del login: debe sentirse como una aplicación corporativa moderna.
+3. Probar la navegación al panel de ganado y asegurar que la tabla sea legible y estéticamente agradable.
+4. Confirmar que los iconos se carguen correctamente.

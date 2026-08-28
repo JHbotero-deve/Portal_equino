@@ -21,15 +21,34 @@ function mostrarMensaje(
 
     messageBox.classList.remove(
         "hidden",
-        "text-red-600",
-        "text-emerald-700"
+        "bg-red-500/10",
+        "text-red-400",
+        "bg-emerald-500/10",
+        "text-emerald-400",
+        "border-red-500/20",
+        "border-emerald-500/20"
     );
 
     messageBox.classList.add(
-        tipo === "error"
-            ? "text-red-600"
-            : "text-emerald-700"
+        "block",
+        "border",
+        "p-4",
+        "rounded-2xl"
     );
+
+    if (tipo === "error") {
+        messageBox.classList.add(
+            "bg-red-500/10",
+            "text-red-400",
+            "border-red-500/20"
+        );
+    } else {
+        messageBox.classList.add(
+            "bg-emerald-500/10",
+            "text-emerald-400",
+            "border-emerald-500/20"
+        );
+    }
 }
 
 // ============================================
