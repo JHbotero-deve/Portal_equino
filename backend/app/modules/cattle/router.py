@@ -17,19 +17,23 @@ def listar_animales(
     sex: Optional[str] = None,
     status_: Optional[str] = None,
     tag: Optional[str] = None,
+    request: Request = None,
     db: Session = Depends(get_db),
     usuario_actual = Depends(get_usuario_actual) # Protegido por JWT
 ):
-    return service.list_animals(db, breed=breed, sex=sex, status_=status_, tag=tag)
+    ip = request.client.host if request else None
+    return service.list_animals(db, breed=breed, sex=sex, status_=status_, tag=tag, usuario=usuario_actual, ip_address=ip)
 
 
 @router.get("/{animal_id}", response_model=AnimalOut)
 def obtener_animal(
     animal_id: int, 
+    request: Request = None,
     db: Session = Depends(get_db),
     usuario_actual = Depends(get_usuario_actual)
 ):
-    return service.get_animal(db, animal_id)
+    ip = request.client.host if request else None
+    return service.get_animal(db, animal_id, usuario=usuario_actual, ip_address=ip)
 
 
 @router.post("/", response_model=AnimalOut, status_code=status.HTTP_201_CREATED)

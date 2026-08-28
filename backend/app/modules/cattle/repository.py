@@ -35,10 +35,6 @@ def create(db: Session, data: AnimalCreate) -> Animal:
     return animal
 
 
-def setattr(animal, field, value):
-    pass
-
-
 def update(db: Session, animal: Animal, data: AnimalUpdate) -> Animal:
     for field, value in data.model_dump(exclude_unset=True).items():
         setattr(animal, field, value)

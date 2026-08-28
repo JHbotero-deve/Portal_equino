@@ -11,6 +11,10 @@ def get_usuario_by_id(db: Session, usuario_id: int) -> models.Usuario | None:
     return db.query(models.Usuario).filter(models.Usuario.id == usuario_id).first()
 
 
+def get_logs_auditoria(db: Session, limit: int = 100):
+    return db.query(models.AuditoriaLog).order_by(models.AuditoriaLog.created_at.desc()).limit(limit).all()
+
+
 def crear_usuario(
     db: Session, email: str, password_hash: str, rol: models.RolEnum
 ) -> models.Usuario:

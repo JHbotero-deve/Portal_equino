@@ -10,6 +10,7 @@ from sqlalchemy.orm import Session
 from app.database import get_db
 
 from . import repository, schemas
+from .audit_service import registrar_accion
 
 
 # ============================================================
@@ -113,7 +114,8 @@ def crear_token(
 
 def registrar_usuario(
     db: Session,
-    datos: schemas.UsuarioCreate
+    datos: schemas.UsuarioCreate,
+    ip_address: str = None
 ):
 
     existente = repository.get_usuario_by_email(
@@ -131,12 +133,23 @@ def registrar_usuario(
         datos.password
     )
 
-    return repository.crear_usuario(
+    usuario = repository.crear_usuario(
         db,
         datos.email,
         password_hash,
         datos.rol
     )
+
+    registrar_accion(
+        db,
+        accion="REGISTRO_USUARIO",
+        usuario_id=usuario.id,
+        email=usuario.email,
+        detalles=f"Nuevo usuario registrado con rol: {datos.rol}",
+        ip=ip_address
+    )
+
+    return usuario
 
 
 # ============================================================
@@ -145,7 +158,8 @@ def registrar_usuario(
 
 def autenticar_usuario(
     db: Session,
-    datos: schemas.UsuarioLogin
+    datos: schemas.UsuarioLogin,
+    ip_address: str = None
 ):
 
     usuario = repository.get_usuario_by_email(
@@ -163,6 +177,14 @@ def autenticar_usuario(
         datos.password,
         usuario.password_hash
     ):
+        # Opcional: registrar intento fallido
+        registrar_accion(
+            db,
+            accion="LOGIN_FALLIDO",
+            email=datos.email,
+            detalles="Contraseña incorrecta",
+            ip=ip_address
+        )
         raise HTTPException(
             status_code=401,
             detail="Email o contraseña incorrectos"
@@ -171,6 +193,14 @@ def autenticar_usuario(
     token = crear_token(
         usuario.id,
         usuario.rol.value
+    )
+
+    registrar_accion(
+        db,
+        accion="LOGIN_EXITOSO",
+        usuario_id=usuario.id,
+        email=usuario.email,
+        ip=ip_address
     )
 
     return token, usuario
@@ -258,3 +288,11 @@ def requerir_rol(
         return usuario
 
     return verificador
+
+
+# ============================================================
+# AUDITORÍA
+# ============================================================
+
+def obtener_logs_auditoria(db: Session):
+    return repository.get_logs_auditoria(db)

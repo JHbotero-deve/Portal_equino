@@ -7,6 +7,7 @@ from app.database import get_db
 from app.modules.auth.service import get_usuario_actual
 from .service import ReportService
 from .schemas import ReporteGeneralOut
+from app.modules.cattle.schemas import AnimalOut
 
 router = APIRouter(prefix="/api/reportes", tags=["Reportes y Consultas"])
 _service = ReportService()
@@ -25,3 +26,14 @@ def obtener_resumen_ganado(
         "fecha_generacion": datetime.now(),
         "resumen": resumen
     }
+
+
+@router.get("/recientes", response_model=List[AnimalOut])
+def obtener_animales_recientes(
+    db: Session = Depends(get_db),
+    usuario_actual = Depends(get_usuario_actual)
+):
+    """
+    Obtiene los 5 animales más recientemente registrados.
+    """
+    return _service.listar_animales_nuevos(db, usuario_actual)

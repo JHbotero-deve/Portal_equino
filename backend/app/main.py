@@ -1,3 +1,4 @@
+import os
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
@@ -5,22 +6,13 @@ from fastapi.responses import FileResponse, RedirectResponse
 from starlette.responses import Response
 from starlette.staticfiles import StaticFiles as _StaticFiles
 
-import os
-
 from app.database import Base, engine
-from app.middleware.security import SecurityHeadersMiddleware
-
-# ============================================
-# ROUTERS
-# ============================================
-
 from app.modules.cattle.router import router as cattle_router
 from app.modules.auth.router import router as auth_router
 from app.modules.reportes.router import router as reportes_router
 
-
 # ============================================
-# APP
+# APP CONFIGURATION
 # ============================================
 
 app = FastAPI(
@@ -29,9 +21,8 @@ app = FastAPI(
     version="1.0.0"
 )
 
-
 # ============================================
-# BASE DE DATOS
+# DATABASE INITIALIZATION
 # ============================================
 
 try:
@@ -40,171 +31,70 @@ try:
 except Exception as e:
     print(f"❌ Error DB: {e}")
 
-
 # ============================================
 # MIDDLEWARES
 # ============================================
 
-# 1. CORS - Configuración ultra-permisiva para desarrollo
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "http://127.0.0.1:5434",
-        "http://localhost:5434",
-        "http://127.0.0.1:3000",
-        "http://localhost:3000",
-        "http://127.0.0.1:5432",
-        "http://localhost:5432",
-        "http://127.0.0.1:8000",
-        "http://localhost:8000",
-    ],
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-# 2. Seguridad (Comentado temporalmente para diagnosticar error 400)
-# app.add_middleware(SecurityHeadersMiddleware)
-
-
 # ============================================
-# UBICACIÓN DEL FRONTEND
-# ============================================
-
-current_file_dir = os.path.dirname(os.path.abspath(__file__))
-
-# backend/app
-#      ↓
-# backend
-#      ↓
-# GAVAC
-root_dir = os.path.normpath(
-    os.path.join(current_file_dir, "..", "..")
-)
-
-frontend_dir = os.path.join(
-    root_dir,
-    "frontend"
-)
-
-print("📁 Frontend:", frontend_dir)
-
-
-# ============================================
-# STATIC FILES
+# STATIC FILES & FRONTEND MAPPING
 # ============================================
 
 class NoCacheStaticFiles(_StaticFiles):
-
-    async def get_response(
-        self,
-        path: str,
-        scope
-    ) -> Response:
-
-        response = await super().get_response(
-            path,
-            scope
-        )
-
-        response.headers[
-            "Cache-Control"
-        ] = "no-store, no-cache, must-revalidate, max-age=0"
-
+    async def get_response(self, path: str, scope) -> Response:
+        response = await super().get_response(path, scope)
+        response.headers["Cache-Control"] = "no-store, no-cache, must-revalidate, max-age=0"
         return response
 
+# Determinar ruta del frontend relativa a la raíz del proyecto
+current_file_dir = os.path.dirname(os.path.abspath(__file__))
+root_dir = os.path.normpath(os.path.join(current_file_dir, "..", ".."))
+frontend_dir = os.path.join(root_dir, "frontend")
 
 if os.path.exists(frontend_dir):
-
-    app.mount(
-        "/static",
-        NoCacheStaticFiles(
-            directory=frontend_dir
-        ),
-        name="static"
-    )
-
-    print("✅ Frontend encontrado.")
-
+    app.mount("/static", NoCacheStaticFiles(directory=frontend_dir), name="static")
+    print(f"✅ Frontend montado desde: {frontend_dir}")
 else:
-
-    print(
-        f"❌ No se encontró el frontend: {frontend_dir}"
-    )
-
+    print(f"⚠️ Advertencia: No se encontró el directorio frontend en {frontend_dir}")
 
 # ============================================
-# PÁGINA PRINCIPAL
+# PUBLIC ROUTES (PAGES)
 # ============================================
 
 @app.get("/")
 def root():
-
-    return RedirectResponse(
-        url="/login"
-    )
-
-
-# ============================================
-# LOGIN
-# ============================================
+    return RedirectResponse(url="/login")
 
 @app.get("/login")
 def login_page():
-    # Usamos la nueva ruta organizada en la raíz del frontend
+    # El archivo principal de login está en la raíz del frontend o en su módulo
     path = os.path.join(frontend_dir, "index.html")
     if os.path.exists(path):
         return FileResponse(path)
     return FileResponse(os.path.join(frontend_dir, "src", "modules", "auth", "index.html"))
 
-
-# ============================================
-# GANADO
-# ============================================
-
 @app.get("/ganado")
 def ganado_page():
-    # Usamos la nueva ruta organizada
-    path = os.path.join(frontend_dir, "ganado", "index.html")
-    if os.path.exists(path):
-        return FileResponse(path)
     return FileResponse(os.path.join(frontend_dir, "src", "modules", "ganado", "index.html"))
-
-
-# ============================================
-# REPORTES
-# ============================================
 
 @app.get("/reportes")
 def reportes_page():
-
-    return FileResponse(
-        os.path.join(
-            frontend_dir,
-            "src",
-            "modules",
-            "reportes",
-            "index.html"
-        )
-    )
-
+    return FileResponse(os.path.join(frontend_dir, "src", "modules", "reportes", "index.html"))
 
 # ============================================
-# API
+# API ROUTERS
 # ============================================
 
-app.include_router(
-    cattle_router
-)
-
-app.include_router(
-    auth_router
-)
-
-app.include_router(
-    reportes_router
-)
-
+app.include_router(cattle_router)
+app.include_router(auth_router)
+app.include_router(reportes_router)
 
 # ============================================
 # HEALTH CHECK
@@ -212,8 +102,8 @@ app.include_router(
 
 @app.get("/health")
 def health():
-
     return {
         "status": "ok",
+        "database": "connected" if engine else "disconnected",
         "message": "GAVAC API is running"
     }

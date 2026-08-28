@@ -2,77 +2,69 @@
 
 Proyecto final ADSO — SENA CTMA (ficha 3223874).
 
-## Stack del proyecto
+## 🚀 Stack del Proyecto
 
-- **Front-end:** HTML + TypeScript + Tailwind CSS
-- **Back-end:** Python (FastAPI)
-- **Base de datos:** SQL Server (por ahora, SQLite local mientras se termina de configurar SQL Server)
+- **Front-end:** HTML5 + TypeScript + Tailwind CSS
+- **Back-end:** Python 3.12+ (FastAPI)
+- **Base de Datos:** PostgreSQL (Alojada en Supabase)
+- **Servidor:** Uvicorn con soporte para recarga en caliente
 
-## Equipo
+## 👥 Equipo y Módulos
 
-| Integrante | Módulo | Carpeta backend | Carpeta frontend |
+| Integrante | Módulo | Carpeta Backend | Carpeta Frontend |
 |---|---|---|---|
-| Oscar (líder) | Registro de ganado + coordinación | `backend/app/modules/cattle` | `frontend/src/modules/ganado` |
-| Juan Herrera | Usuarios y autenticación | `backend/app/modules/auth` | `frontend/src/modules/auth` |
-| Jorge Botero | Consultas y reportes | `backend/app/modules/reportes` | `frontend/src/modules/reportes` |
-| Elian Martínez | Base de datos y documentación final | — (define el modelo real en SQL Server) | — |
+| **Oscar (Líder)** | Registro de ganado + coordinación | `backend/app/modules/cattle` | `frontend/src/modules/ganado` |
+| **Juan Herrera** | Usuarios y autenticación | `backend/app/modules/auth` | `frontend/src/modules/auth` |
+| **Jorge Botero** | Consultas y reportes | `backend/app/modules/reportes` | `frontend/src/modules/reportes` |
+| **Elian Martínez** | Base de datos y documentación | — (Administra Supabase) | — |
 
-## Estructura del repositorio
+## 📂 Estructura del Repositorio
 
-```
+```text
 gavac/
 ├── backend/                  # API en Python (FastAPI)
-│   ├── requirements.txt
-│   ├── .env.example
+│   ├── requirements.txt      # Dependencias del sistema
+│   ├── .env.example          # Plantilla para DATABASE_URL
 │   └── app/
-│       ├── main.py           # Punto de entrada, une todos los módulos
-│       ├── database.py       # Conexión a la base de datos (compartida)
-│       └── modules/
-│           ├── cattle/       # Oscar
-│           ├── auth/         # Juan
-│           └── reportes/     # Jorge
-├── frontend/                 # HTML + TypeScript + Tailwind
-│   ├── index.html
-│   ├── tsconfig.json
+│       ├── main.py           # Punto de entrada unificado
+│       ├── database.py       # Conexión centralizada a Supabase
+│       └── modules/          # Módulos funcionales
+├── frontend/                 # Interfaz de usuario
+│   ├── index.html            # Punto de entrada (Login)
+│   ├── tsconfig.json         # Configuración de TypeScript
 │   └── src/
-│       ├── shared/           # Código común entre módulos
-│       └── modules/
-│           ├── ganado/       # Oscar
-│           ├── auth/         # Juan
-│           └── reportes/     # Jorge
-├── docs/sections/            # Guía de trabajo del repositorio
-└── .github/                  # Plantillas de PR e issues
+│       ├── shared/           # Tipos y utilidades comunes
+│       └── modules/          # Módulos de la UI
+├── docs/                     # Documentación técnica adicional
+└── guia_instalacion.md       # 🏁 Guía rápida de comandos
 ```
 
-Cada módulo de `backend/app/modules/` y `frontend/src/modules/` sigue
-el mismo patrón interno. Entra a la carpeta de tu módulo — cada una
-tiene su propio `README.md` con los pasos exactos para empezar.
+## ⚙️ Cómo ejecutar el proyecto
 
-## Cómo correr el proyecto localmente
+Para una guía detallada con comandos de copiado rápido, consulta la **[Guía de Instalación](guia_instalacion.md)**.
 
-### Backend
-```bash
+### Backend (FastAPI)
+```powershell
 cd backend
-python -m venv venv
-source venv/bin/activate        # En Windows: venv\Scripts\activate
-pip install -r requirements.txt
-cp .env.example .env
-uvicorn app.main:app --reload --port 8000
+.\venv\Scripts\Activate.ps1
+$env:PYTHONPATH="."
+$env:PYO3_USE_ABI3_FORWARD_COMPATIBILITY=1
+python -m uvicorn app.main:app --reload --port 8000
 ```
-Documentación interactiva de la API: http://localhost:5432/docs
+> **API Docs:** [http://localhost:8000/docs](http://localhost:8000/docs)
 
-### Frontend
-```bash
+### Frontend (TypeScript)
+```powershell
 cd frontend
 npm install
-npx tsc
+npx tsc  # Compilar TypeScript a JS
 ```
-Luego abre `index.html` en el navegador (o usa la extensión Live Server de VS Code).
+Abre `index.html` con **Live Server** o directamente en el navegador.
 
-## Reglas de trabajo en equipo
+## 📜 Reglas de Trabajo
 
-1. **Cada quien trabaja solo dentro de su carpeta de módulo.** Si necesitas algo de otro módulo (ej. Jorge necesita el modelo `Animal` de Oscar), impórtalo, pero no lo modifiques sin avisar.
-2. **La base de datos la controla Elian.** Nadie más cambia el modelo de datos en SQL Server directamente.
-3. **Cada rama de Git se llama `feature/<módulo>`** (ej. `feature/auth`, `feature/reportes`). Los cambios se suben por Pull Request.
-4. **`backend/app/main.py` y `backend/app/database.py` son compartidos** — cualquier cambio ahí se avisa al equipo antes de hacer commit.
-5. Mientras SQL Server no esté listo, todos pueden trabajar con SQLite local (ver `.env.example`) sin bloquearse entre sí.
+1. **Encapsulamiento:** Trabaja solo dentro de la carpeta de tu módulo.
+2. **Base de Datos:** Elian gestiona el modelo en Supabase. No alteres las tablas sin coordinación previa.
+3. **Flujo Git:** Usa ramas `feature/<módulo>` y sube cambios mediante Pull Requests.
+4. **Auditoría:** Todas las acciones de escritura y lectura deben pasar por el servicio de auditoría modular.
+5. **Configuración:** Nunca subas el archivo `.env` real al repositorio; usa siempre `.env.example`.

@@ -8,15 +8,34 @@ from app.modules.cattle.schemas import AnimalCreate, AnimalUpdate
 from app.modules.auth.audit_service import registrar_accion
 
 
-def list_animals(db: Session, breed=None, sex=None, status_=None, tag=None):
+def list_animals(db: Session, breed=None, sex=None, status_=None, tag=None, usuario=None, ip_address: str = None):
+    if usuario:
+        registrar_accion(
+            db,
+            accion="LISTADO_GANADO",
+            usuario_id=usuario.id,
+            email=usuario.email,
+            detalles="Consultó lista completa de animales",
+            ip=ip_address
+        )
     return repo.find_all(db, breed=breed, sex=sex, status=status_, tag=tag)
 
 
-def get_animal(db: Session, animal_id: int):
+def get_animal(db: Session, animal_id: int, usuario=None, ip_address: str = None):
     animal = repo.find_by_id(db, animal_id)
     if not animal:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
                              detail=f"No existe un animal con id {animal_id}.")
+    
+    if usuario:
+        registrar_accion(
+            db,
+            accion="CONSULTA_ANIMAL",
+            usuario_id=usuario.id,
+            email=usuario.email,
+            detalles=f"Consultó detalle del animal ID: {animal_id}",
+            ip=ip_address
+        )
     return animal
 
 

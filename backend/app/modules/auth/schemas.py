@@ -3,6 +3,7 @@ Schemas de Pydantic: validan lo que entra (requests) y dan forma a lo que sale (
 """
 
 from datetime import datetime
+from typing import Optional
 
 from pydantic import BaseModel, EmailStr
 
@@ -36,3 +37,16 @@ class Token(BaseModel):
     access_token: str
     token_type: str = "bearer"
     usuario: UsuarioOut
+
+
+class AuditoriaLogOut(BaseModel):
+    id: int
+    usuario_id: Optional[int] = None
+    email: Optional[str] = None
+    accion: str
+    detalles: Optional[str] = None
+    ip_address: Optional[str] = None
+    created_at: datetime
+
+    class Config:
+        from_attributes = True

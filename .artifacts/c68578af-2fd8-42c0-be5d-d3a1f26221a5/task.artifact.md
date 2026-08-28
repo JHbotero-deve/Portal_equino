@@ -1,6 +1,0 @@
-- [/] Restaurar diseño "Esmeralda Profesional" (Solo Local)
-    - [/] Rediseñar Login (`index.html`)
-    - [ ] Rediseñar Panel de Ganado (`ganado/index.html`)
-    - [ ] Verificar carga de fuentes y Tailwind
-- [ ] Esperar aprobación visual del usuario
-- [ ] Realizar commit y push (Solo tras aprobación)

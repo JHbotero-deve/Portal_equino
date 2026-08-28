@@ -26,4 +26,4 @@ cattle/
 
 ## Dudas de arranque
 - Instala dependencias con `pip install -r ../requirements.txt` (compartido por todo el backend).
-- Coordina con Elian (base de datos) cuando el modelo real esté listo en SQL Server.
+- Coordina con Elian (base de datos) cuando el modelo real esté listo en Supabase.
