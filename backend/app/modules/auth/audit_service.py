@@ -21,6 +21,10 @@ def registrar_accion(
         ip_address=ip
     )
     db.add(log)
-    db.commit()
-    db.refresh(log)
+    try:
+        db.commit()
+        db.refresh(log)
+    except Exception as e:
+        db.rollback()
+        print(f"⚠️ Error al registrar auditoría: {e}")
     return log

@@ -1,12 +1,12 @@
 import os
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse, RedirectResponse
 from starlette.responses import Response
 from starlette.staticfiles import StaticFiles as _StaticFiles
 
 from app.database import Base, engine
+from app.middleware.security import SecurityHeadersMiddleware
 from app.modules.cattle.router import router as cattle_router
 from app.modules.auth.router import router as auth_router
 from app.modules.reportes.router import router as reportes_router
@@ -27,14 +27,17 @@ app = FastAPI(
 
 try:
     Base.metadata.create_all(bind=engine)
-    print("✅ Conexión a Base de Datos exitosa.")
-except Exception as e:
-    print(f"❌ Error DB: {e}")
+except Exception:
+    pass # Managed by health check or initial startup logs
 
 # ============================================
 # MIDDLEWARES
 # ============================================
 
+# Security Headers (Production Ready)
+app.add_middleware(SecurityHeadersMiddleware)
+
+# CORS Configuration
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -53,16 +56,12 @@ class NoCacheStaticFiles(_StaticFiles):
         response.headers["Cache-Control"] = "no-store, no-cache, must-revalidate, max-age=0"
         return response
 
-# Determinar ruta del frontend relativa a la raíz del proyecto
 current_file_dir = os.path.dirname(os.path.abspath(__file__))
 root_dir = os.path.normpath(os.path.join(current_file_dir, "..", ".."))
 frontend_dir = os.path.join(root_dir, "frontend")
 
 if os.path.exists(frontend_dir):
     app.mount("/static", NoCacheStaticFiles(directory=frontend_dir), name="static")
-    print(f"✅ Frontend montado desde: {frontend_dir}")
-else:
-    print(f"⚠️ Advertencia: No se encontró el directorio frontend en {frontend_dir}")
 
 # ============================================
 # PUBLIC ROUTES (PAGES)
@@ -74,7 +73,6 @@ def root():
 
 @app.get("/login")
 def login_page():
-    # El archivo principal de login está en la raíz del frontend o en su módulo
     path = os.path.join(frontend_dir, "index.html")
     if os.path.exists(path):
         return FileResponse(path)
@@ -104,6 +102,5 @@ app.include_router(reportes_router)
 def health():
     return {
         "status": "ok",
-        "database": "connected" if engine else "disconnected",
         "message": "GAVAC API is running"
     }

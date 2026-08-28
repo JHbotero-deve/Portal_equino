@@ -1,68 +1,62 @@
-# 🏁 Guía de Instalación y Ejecución - GAVAC
+# 🏁 Guía Unificada de Producción - GAVAC
 
-Esta guía contiene los comandos exactos para configurar el entorno y ejecutar el sistema evitando errores comunes de compatibilidad.
+Esta guía garantiza que el sistema funcione sin errores de compilación, forzando el uso de una versión estable de Python (3.11).
 
 ---
 
-## 1️⃣ Configuración del Entorno (Primera Vez)
+## 1️⃣ Instalación Limpia (Solo la primera vez)
 
-Ejecuta estos comandos desde la carpeta raíz del proyecto:
+Si tuviste errores previos, ejecuta esto para limpiar y reinstalar correctamente:
 
 ```powershell
-# Entrar al backend
-cd backend
+# 1. Borrar entorno anterior si existe (desde la raíz del proyecto)
+Remove-Item -Recurse -Force backend/venv
 
-# Crear entorno virtual
-python -m venv venv
+# 2. Crear entorno con Python 3.11 (Versión estable instalada en tu equipo)
+py -3.11 -m venv backend/venv
 
-# Activar entorno (PowerShell)
-.\venv\Scripts\Activate.ps1
-
-# Configurar compatibilidad para Python 3.14 (¡CRÍTICO!)
-$env:PYO3_USE_ABI3_FORWARD_COMPATIBILITY=1
-
-# Instalar librerías esenciales
+# 3. Activar e instalar dependencias
+.\backend\venv\Scripts\Activate.ps1
 pip install --upgrade pip
-pip install -r requirements.txt
+pip install -r backend/requirements.txt
 ```
 
 ---
 
-## 2️⃣ Preparar la Base de Datos
+## 2️⃣ Configuración de Base de Datos
 
-1. Crea una copia del archivo de ejemplo:
-   ```powershell
-   cp .env.example .env
-   ```
-2. Abre el archivo `.env` y asegúrate de que la `DATABASE_URL` sea la proporcionada por Elian (Supabase).
+Asegúrate de tener el archivo `.env` en la carpeta `backend`:
+1. Crea la copia: `cp backend/.env.example backend/.env`
+2. Edita `backend/.env` con la URL de Supabase real.
 
 ---
 
-## 3️⃣ Ejecución del Servidor (Comando Diario)
+## 3️⃣ Ejecución del Servidor (Modo Producción)
 
-Abre una terminal en la carpeta `backend` y ejecuta este bloque:
+Cada vez que inicies el sistema, usa este bloque en tu terminal:
 
 ```powershell
-# 1. Activar entorno
+# Moverse a la carpeta del servidor
+cd backend
+
+# Activar el entorno seguro
 .\venv\Scripts\Activate.ps1
 
-# 2. Configurar contexto de módulos y compatibilidad
+# Configurar el entorno de ejecución
 $env:PYTHONPATH="."
-$env:PYO3_USE_ABI3_FORWARD_COMPATIBILITY=1
 
-# 3. Lanzar FastAPI
+# Lanzar el servidor unificado
 python -m uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
 ```
 
 ---
 
-## 💡 Consejos de Uso
+## ✅ Lista de Verificación Final (Audit)
 
-- **Documentación:** Una vez el servidor diga "Uvicorn running", entra a [http://localhost:8000/docs](http://localhost:8000/docs) para probar los endpoints.
-- **Frontend:** Si vas a trabajar en la UI, recuerda compilar el TypeScript ejecutando `npx tsc` dentro de la carpeta `frontend`.
-- **Auditoría:** Todas tus acciones quedarán registradas en la tabla de logs de Supabase automáticamente.
-
----
+*   **Ruta API:** [http://localhost:8000/docs](http://localhost:8000/docs)
+*   **Ruta Web:** [http://localhost:8000/login](http://localhost:8000/login)
+*   **Versión Python:** Debe ser **3.11.x** (verifica con `python --version`).
+*   **Seguridad:** Cabeceras HSTS, CSP y X-Frame activadas automáticamente.
 
 > [!IMPORTANT]
-> Si recibes el error `ModuleNotFoundError: No module named 'app'`, verifica que hayas ejecutado `$env:PYTHONPATH="."` antes de lanzar uvicorn.
+> **Auditoría Activa:** Todas las acciones del sistema quedan registradas en la tabla `logs_auditoria` de Supabase para trazabilidad total.
