@@ -1,4 +1,7 @@
 - [x] Configurar Puerto 5434 para Frontend
-    - [x] Actualizar puerto en `frontend/package.json`
-    - [x] Autorizar puerto 5434 en `backend/app/main.py` (CORS)
-- [x] Verificar funcionamiento del sistema
+- [x] Restaurar diseño profesional de las pantallas
+    - [x] Añadir Google Fonts (Inter) a los archivos HTML
+    - [x] Corregir y estabilizar rutas de scripts JS
+    - [x] Eliminar archivos HTML redundantes (`ganado.html`)
+    - [x] Verificar consistencia de colores esmeralda
+- [x] Realizar commit y push de las mejoras de diseño
