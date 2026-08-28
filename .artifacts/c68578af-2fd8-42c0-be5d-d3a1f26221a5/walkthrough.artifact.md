@@ -1,31 +1,33 @@
-# Walkthrough Final - Solución de Redirección y Rutas Limpias
+# Walkthrough - Configuración de Puerto 5434 y Comunicación API
 
-He corregido el problema por el cual el login no te llevaba a la página de registro de ganado. Ahora el sistema utiliza una estructura de rutas "limpias" que mejora la compatibilidad entre el frontend (puerto 5432) y el backend (puerto 8000).
+Se ha configurado el proyecto para que el frontend se ejecute en el puerto **5434** de forma independiente, manteniendo la comunicación con el backend en el puerto **8000**.
 
 ## Cambios Realizados
 
 ### Frontend
-- **Nueva Estructura de Ganado**: Se creó la carpeta `frontend/ganado/` y se movió el archivo HTML allí como `index.html`. Esto permite acceder mediante la URL `http://localhost:5432/ganado/`.
-- **Redirección Corregida**: En `auth/main.ts`, se ajustó la lógica para que, tras un login exitoso, el navegador se dirija automáticamente a `/ganado/`.
-- **Rutas de Scripts**: Se corrigió el path del script en `ganado/index.html` a `../dist/modules/ganado/main.js` para que el navegador lo encuentre correctamente desde la subcarpeta.
+- **Configuración de Puerto**: Se actualizó el archivo `frontend/package.json` para que el servidor `live-server` utilice el puerto **5434**. Esto evita conflictos con otros servicios locales que pudieran estar usando el puerto 5432.
 
 ### Backend
-- **Endpoint Sincronizado**: Se actualizó el backend en `app/main.py` para que, si el usuario escribe `/ganado` en el puerto 8000, sirva el nuevo archivo `frontend/ganado/index.html`.
+- **Actualización de Seguridad (CORS)**: Se modificó `backend/app/main.py` para incluir `http://localhost:5434` en la lista de orígenes permitidos. Esto es esencial para que el navegador permita las peticiones de Login y Registro desde el nuevo puerto del frontend hacia la API.
 
-## Pasos Cruciales para Probar
+## Instrucciones de Ejecución
 
-> [!IMPORTANT]
-> **COMPILACIÓN**: Los cambios en TypeScript (`.ts`) no se ven reflejados hasta que compiles.
-> 1. Abre una terminal en `C:\proyecto_Final_Gavac\GAVAC\frontend`.
-> 2. Ejecuta: `npm run build`.
-> 3. Si no tienes el script `build`, asegúrate de que `tsc` esté instalado y ejecuta `tsc` en esa carpeta.
+Para iniciar el sistema completo, abre dos terminales en Visual Studio Code:
 
-> [!WARNING]
-> **Servidor Frontend**: Asegúrate de que `live-server` esté corriendo en el puerto 5432 (`npm start`).
-> **Servidor Backend**: Asegúrate de que `uvicorn` esté corriendo en el puerto 8000.
+### Terminal 1: Backend
+```powershell
+cd backend
+uvicorn app.main:app --reload --port 8000
+```
 
-## Verificación Visual
-1. Entra a `http://localhost:5432`.
-2. Introduce tus credenciales.
-3. El sistema debe decir "✅ Sesión iniciada. Redirigiendo...".
-4. La página debe cambiar a `http://localhost:5432/ganado/` y mostrar el panel de registro de animales.
+### Terminal 2: Frontend
+```powershell
+cd frontend
+npm start
+```
+*El navegador se abrirá automáticamente en `http://localhost:5434`.*
+
+## Verificación
+1. Accede a `http://localhost:5434`.
+2. Verás la pantalla de login verde de **GAVAC**.
+3. Realiza el login; la comunicación con el backend (puerto 8000) ahora funcionará correctamente sin errores de CORS.

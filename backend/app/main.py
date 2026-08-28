@@ -42,12 +42,17 @@ except Exception as e:
 
 
 # ============================================
-# CORS
+# MIDDLEWARES
 # ============================================
 
+# 1. CORS - Configuración ultra-permisiva para desarrollo
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
+        "http://127.0.0.1:5434",
+        "http://localhost:5434",
+        "http://127.0.0.1:3000",
+        "http://localhost:3000",
         "http://127.0.0.1:5432",
         "http://localhost:5432",
         "http://127.0.0.1:8000",
@@ -58,12 +63,8 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-
-# ============================================
-# SEGURIDAD
-# ============================================
-
-app.add_middleware(SecurityHeadersMiddleware)
+# 2. Seguridad (Comentado temporalmente para diagnosticar error 400)
+# app.add_middleware(SecurityHeadersMiddleware)
 
 
 # ============================================

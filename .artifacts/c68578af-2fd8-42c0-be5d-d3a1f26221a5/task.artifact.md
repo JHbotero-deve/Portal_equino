@@ -1,9 +1,4 @@
-- [x] Actualizar Workflow de GitHub (`repo-audit.yml`)
-    - [x] Añadir paso de instalación de dependencias Node
-    - [x] Añadir paso de compilación TypeScript (`tsc`)
-    - [x] Añadir validación básica de sintaxis Python
-- [x] Actualizar Plantilla de Pull Request (`PULL_REQUEST_TEMPLATE.md`)
-    - [x] Corregir referencias a Prisma por SQLAlchemy/Supabase
-    - [x] Ajustar checklist de validación
-- [/] Verificar sintaxis de los archivos YAML
-- [/] Realizar commit y push de las mejoras de workflow
+- [x] Configurar Puerto 5434 para Frontend
+    - [x] Actualizar puerto en `frontend/package.json`
+    - [x] Autorizar puerto 5434 en `backend/app/main.py` (CORS)
+- [x] Verificar funcionamiento del sistema

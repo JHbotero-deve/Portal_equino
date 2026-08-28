@@ -6,7 +6,7 @@ class SecurityHeadersMiddleware:
         self.app = app
 
     async def __call__(self, scope, receive, send):
-        if scope["type"] != "http":
+        if scope["type"] != "http" or scope["method"] == "OPTIONS":
             await self.app(scope, receive, send)
             return
 
