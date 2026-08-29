@@ -8,16 +8,15 @@ Este proyecto es una evolución del stack de GAVAC, optimizado para ser **Modula
 - **Juan (Auth)**: Autenticación y Roles (`backend/src/modules/auth`)
 - **Elian (Frontend)**: Interfaz de usuario con Vite + Tailwind (`frontend/`)
 
-## Instalación Rápida
-1. **Backend**:
-   - `cd backend`
-   - `npm install`
-   - `npm run setup` (Crea  .env, configúralo con supabase)
-   - `npm run dev`
-2. **Frontend**:
-   - `cd frontend`
-   - `npm install`
-   - `npm run dev`
+## Entrega Profesional
+Para generar una entrega limpia y verificada para el cliente o el servidor de producción, ejecuta el script inteligente desde PowerShell:
+`.\PortalEquino_Pro_Deploy.ps1`
+
+Este script se encarga de:
+1. Instalar dependencias automáticamente.
+2. Compilar el código TypeScript.
+3. Verificar la conexión con Supabase.
+4. Crear una carpeta `ENTREGA_FINAL_PRO` con solo los archivos necesarios para el despliegue.
 
 ## Arquitectura de seguridad
 - **JWT**: Tokens de 8 horas.

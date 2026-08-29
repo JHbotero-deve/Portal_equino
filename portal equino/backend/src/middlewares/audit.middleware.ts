@@ -1,26 +1,29 @@
 import { Request, Response, NextFunction } from 'express';
 import pool from '../lib/db';
 
-// Middleware de Auditoría: Registra cada acción de escritura (POST, PUT, DELETE)
+// Middleware de Auditoría Avanzada: Registra cambios con IP y Usuario
 export const auditoriaMiddleware = async (req: Request, res: Response, next: NextFunction) => {
     const originalSend = res.send;
 
-    // Solo auditamos métodos que cambian datos o acciones importantes
     if (['POST', 'PUT', 'DELETE', 'PATCH'].includes(req.method)) {
-
-        // Interceptamos la respuesta para saber si fue exitosa
         res.send = function (content) {
             const statusCode = res.statusCode;
-            // @ts-ignore
-            const usuarioId = req.usuario?.id || 'ANONIMO';
+            const usuarioId = req.usuario?.id?.toString() || 'ANONIMO';
             const accion = `${req.method} ${req.originalUrl}`;
+            const ip = req.ip || req.socket.remoteAddress || 'IP_DESCONOCIDA';
 
-            // Registro asíncrono en la tabla de auditoría
             if (statusCode >= 200 && statusCode < 300) {
+                // Registro con detalles e IP para mayor seguridad
+                const detalles = {
+                    body: req.body,
+                    ip: ip,
+                    params: req.params
+                };
+
                 pool.query(
                     'INSERT INTO logs_auditoria (usuario_id, accion, detalles, fecha) VALUES ($1, $2, $3, NOW())',
-                    [usuarioId, accion, JSON.stringify(req.body)]
-                ).catch(err => console.error('Error en Auditoría:', err));
+                    [usuarioId, accion, JSON.stringify(detalles)]
+                ).catch(err => console.error('Error en Auditoría Crítica:', err));
             }
 
             return originalSend.call(this, content);

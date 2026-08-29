@@ -1,4 +1,5 @@
 import { Pool } from 'pg';
+import type { PoolClient } from 'pg';
 import dotenv from 'dotenv';
 
 dotenv.config();
@@ -18,6 +19,22 @@ pool.on('connect', () => {
 pool.on('error', (err) => {
   console.error('Error inesperado en el cliente de base de datos', err);
 });
+
+// Utilidad para Transacciones Seguras (Requisito Base Sólida)
+export const withTransaction = async <T>(callback: (client: PoolClient) => Promise<T>): Promise<T> => {
+  const client = await pool.connect();
+  try {
+    await client.query('BEGIN');
+    const result = await callback(client);
+    await client.query('COMMIT');
+    return result;
+  } catch (err) {
+    await client.query('ROLLBACK');
+    throw err;
+  } finally {
+    client.release();
+  }
+};
 
 // Crear tablas iniciales si no existen
 const inicializarDB = async () => {
