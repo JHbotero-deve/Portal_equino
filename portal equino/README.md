@@ -25,3 +25,6 @@ Este script se encarga de:
 
 ## Repositorio Base
 Inspirado en [GAVAC](https://github.com/oscarandresnavamen18-debut/GAVAC).
+
+---
+*Estado del Sistema: Base Sólida Verificada y Auditada por CI/CD.*
