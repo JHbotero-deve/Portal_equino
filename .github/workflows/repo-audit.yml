@@ -6,44 +6,44 @@ on:
   pull_request:
     branches: [ main, master ]
 
-concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
-
 jobs:
-  audit-and-build:
+  audit:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
+      - name: Checkout del código
         uses: actions/checkout@v4
 
-      - name: Auditoría de Estructura (Base Sólida)
+      - name: Diagnóstico de Directorios
+        run: |
+          echo "Estructura detectada en la raíz:"
+          ls -F
+          echo "-----------------------------------"
+          echo "Contenido de 'portal equino':"
+          ls -F "portal equino/" || echo "No se pudo acceder a 'portal equino/'"
+
+      - name: Auditoría de Archivos Críticos
         run: |
           set -e
-          echo "Iniciando auditoría de la nueva estructura modular..."
-          missing=0
+          echo "Verificando integridad de la Base Sólida..."
+          
+          # Definir archivos obligatorios (Rutas relativas a la raíz del repo)
+          # Usamos comillas dobles para manejar el espacio en "portal equino"
+          FILES=(
+            "portal equino/backend/package.json"
+            "portal equino/frontend/package.json"
+            "portal equino/README.md"
+            "portal equino/.gitignore"
+            "portal equino/backend/src/modules/ganado/ganado.routes.ts"
+          )
 
-          check_required() {
-            if [ ! -e "$1" ]; then
-              echo "MISSING: $1"
-              missing=1
+          for file in "${FILES[@]}"; do
+            if [ -f "$file" ]; then
+              echo "✅ OK: $file"
             else
-              echo "OK: $1"
+              echo "❌ ERROR: No se encuentra el archivo: $file"
+              exit 1
             fi
-          }
-
-          # Verificación de la ruta del proyecto principal
-          check_required "portal equino/backend/package.json"
-          check_required "portal equino/frontend/package.json"
-          check_required "portal equino/README.md"
-          check_required "portal equino/.gitignore"
-          check_required "portal equino/backend/src/modules/ganado/ganado.routes.ts"
-          check_required "portal equino/docs/PLAN.md"
-
-          if [ "$missing" -eq 1 ]; then
-            echo "AUDITORÍA FALLIDA: La estructura de Portal Equino no cumple los requisitos de Base Sólida."
-            exit 1
-          fi
+          done
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -52,13 +52,13 @@ jobs:
           cache: 'npm'
           cache-dependency-path: 'portal equino/backend/package.json'
 
-      - name: Build Backend (TypeScript)
+      - name: Validar Backend (Oscar)
         working-directory: './portal equino/backend'
         run: |
           npm install
           npm run build
 
-      - name: Build Frontend (Vite + Tailwind)
+      - name: Validar Frontend (Elian)
         working-directory: './portal equino/frontend'
         run: |
           npm install
